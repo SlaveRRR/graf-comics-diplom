@@ -1,0 +1,5 @@
+yarn type-check
+yarn lint
+yarn test
+yarn pretty-quick
+git add .
