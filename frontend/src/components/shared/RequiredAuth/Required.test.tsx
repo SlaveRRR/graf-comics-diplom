@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 
 import { RequiredAuth } from './RequiredAuth';
@@ -13,17 +14,20 @@ vi.mock('@hooks', () => ({
 describe('RequiredAuth', () => {
   test('проверка отрисовки компонента для авторизованного пользователя', () => {
     mockUseApp.mockReturnValue({ isAuth: true });
-    render(<RequiredAuth>{AuthorizedContent}</RequiredAuth>);
+    render(<RequiredAuth>{AuthorizedContent}</RequiredAuth>, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.getByTestId('auth-required')).toBeInTheDocument();
   });
 
   test('проверка отрисовки компонента для неавторизованного пользователя', () => {
     mockUseApp.mockReturnValue({ isAuth: false });
-    render(<RequiredAuth>{AuthorizedContent}</RequiredAuth>);
+    render(<RequiredAuth>{AuthorizedContent}</RequiredAuth>, {
+      wrapper: MemoryRouter,
+    });
 
     expect(screen.queryByTestId('auth-required')).not.toBeInTheDocument();
-    expect(screen.getByTestId('title')).toBeInTheDocument();
-    expect(screen.getByTestId('button')).toBeInTheDocument();
+    expect(screen.getByTestId('card')).toBeInTheDocument();
   });
 });

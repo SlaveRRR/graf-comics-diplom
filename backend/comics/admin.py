@@ -1,10 +1,11 @@
-﻿from django.contrib import admin
+from django.conf import settings
+from django.contrib import admin
+from django.utils.html import format_html
 
 from comics.models import (
     Chapter,
     ChapterUploadDraft,
     Comic,
-    ComicComment,
     ComicRating,
     ComicStats,
     ComicUploadDraft,
@@ -32,11 +33,27 @@ class ChapterInline(admin.TabularInline):
 
 @admin.register(Comic)
 class ComicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'author', 'status', 'published_at', 'created_at')
+    list_display = ('id', 'title', 'author', 'status', 'preview_link', 'published_at', 'created_at')
     list_filter = ('status', 'genre', 'tags')
     search_fields = ('title', 'description', 'author__username')
     autocomplete_fields = ('author',)
+    readonly_fields = ('preview_link',)
     inlines = [ChapterInline]
+
+    @admin.display(description='Preview')
+    def preview_link(self, obj: Comic):
+        first_chapter = obj.chapters.order_by('chapter_number', 'id').first()
+
+        if not first_chapter:
+            return 'Нет глав для preview'
+
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
+        preview_url = f'{frontend_url}/comics/{obj.id}/chapters/{first_chapter.id}?preview'
+
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener noreferrer">Открыть preview</a>',
+            preview_url,
+        )
 
 
 @admin.register(Chapter)
@@ -45,13 +62,6 @@ class ChapterAdmin(admin.ModelAdmin):
     list_filter = ('published_at',)
     search_fields = ('title', 'comic__title')
     autocomplete_fields = ('comic',)
-
-
-@admin.register(ComicComment)
-class ComicCommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'comic', 'user', 'reply_to', 'created_at')
-    search_fields = ('comic__title', 'user__username', 'text')
-    autocomplete_fields = ('comic', 'user', 'reply_to')
 
 
 @admin.register(ComicRating)

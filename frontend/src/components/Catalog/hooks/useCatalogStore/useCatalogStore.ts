@@ -1,31 +1,16 @@
-import { create } from 'zustand';
+import { useQuery } from '@tanstack/react-query';
 
-import catalogMock from '../../data/catalog.json';
-import { CatalogItem } from './types';
+import { api } from '@api';
+import { STALE_TIME } from '@constants';
 
-type CatalogState = {
-  items: CatalogItem[];
-  isLoading: boolean;
-};
+export const CATALOG_QUERY_KEY = 'catalog';
 
-type CatalogActions = {
-  init: () => void;
-};
-
-type CatalogStore = CatalogState & CatalogActions;
-
-const initialItems = catalogMock as CatalogItem[];
-
-export const useCatalogStore = create<CatalogStore>((set) => ({
-  items: [],
-  isLoading: false,
-  init: () => {
-    set({ isLoading: true });
-    // эмуляция загрузки с бэкенда
-    setTimeout(() => {
-      if (import.meta.env.VITE_IS_MOCK_ACTIVE) {
-        set({ items: initialItems, isLoading: true });
-      }
-    }, 600);
-  },
-}));
+export const useCatalogQuery = () =>
+  useQuery({
+    queryKey: [CATALOG_QUERY_KEY],
+    staleTime: STALE_TIME,
+    queryFn: async () => {
+      const response = await api.getCatalogComics();
+      return response.data.data;
+    },
+  });

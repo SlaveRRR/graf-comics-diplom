@@ -1,7 +1,7 @@
 import { Button, Carousel, Col, Masonry, Row } from 'antd';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRightOutlined, CompassOutlined, EditOutlined, LoginOutlined, ReadOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined } from '@ant-design/icons';
 
 import { colors } from '@constants';
 
@@ -20,12 +20,6 @@ import {
   SectionHeader,
   SectionTitle,
   SectionTitleGroup,
-  ShortcutCard,
-  ShortcutFooter,
-  ShortcutIconWrap,
-  ShortcutText,
-  ShortcutTextGroup,
-  ShortcutTitle,
   ShowcaseBadge,
   ShowcaseCard,
   ShowcaseCardMeta,
@@ -44,7 +38,7 @@ import {
   SlideTextGroup,
   SlideTitle,
 } from './styled';
-import type { EditorialSlide, GenreItem, GenreMasonryItem, ShortcutItem, ShowcaseItem } from './types';
+import type { EditorialSlide, GenreItem, GenreMasonryItem, ShowcaseItem } from './types';
 
 const genreItems: GenreItem[] = [
   {
@@ -179,50 +173,6 @@ const newItems: ShowcaseItem[] = [
   },
 ];
 
-const shortcuts: ShortcutItem[] = [
-  {
-    title: 'Каталог',
-    description: 'Перейти к тайтлам, фильтрам и полной подборке релизов прямо сейчас.',
-    href: '/catalog',
-    cta: 'Открыть каталог',
-    icon: <CompassOutlined />,
-    accent: colors.brand.primary,
-    iconBackground: colors.surface.brandSubtle,
-    iconColor: colors.brand.primary,
-  },
-  {
-    title: 'Для авторов',
-    description: 'Начать путь публикации, подготовить профиль и собрать базовую витрину своих историй.',
-    href: '/signup',
-    cta: 'Стать автором',
-    icon: <EditOutlined />,
-    accent: colors.brand.secondary,
-    iconBackground: colors.surface.infoSubtle,
-    iconColor: colors.brand.secondary,
-  },
-  {
-    title: 'Войти в профиль',
-    description: 'Вернуться к библиотеке, истории чтения и личным настройкам интерфейса.',
-    href: '/signin',
-    cta: 'Открыть профиль',
-    icon: <LoginOutlined />,
-    accent: colors.brand.accent,
-    iconBackground: colors.surface.accentSubtle,
-    iconColor: colors.brand.accent,
-  },
-  {
-    title: 'Блог редакции',
-    description: 'Раздел с обзорами, подборками и заметками о новых релизах можно развивать следующим этапом.',
-    href: '',
-    cta: 'Скоро',
-    icon: <ReadOutlined />,
-    accent: colors.border.default,
-    iconBackground: colors.surface.muted,
-    iconColor: colors.text.muted,
-    disabled: true,
-  },
-];
-
 export const Home: FC = () => {
   return (
     <PageRoot vertical>
@@ -350,48 +300,6 @@ export const Home: FC = () => {
             </CardLink>
           )}
         />
-      </SectionBlock>
-
-      <SectionBlock vertical>
-        <SectionHeader>
-          <SectionTitleGroup vertical>
-            <SectionEyebrow>Fast actions</SectionEyebrow>
-            <SectionTitle level={2}>Быстрые переходы для ключевых сценариев</SectionTitle>
-          </SectionTitleGroup>
-          <SectionDescription>
-            Главная должна не только вдохновлять, но и быстро вести пользователя в нужный раздел без лишнего поиска по
-            меню.
-          </SectionDescription>
-        </SectionHeader>
-
-        <Row gutter={[16, 16]}>
-          {shortcuts.map((shortcut) => (
-            <Col key={shortcut.title} xs={24} sm={12} xl={6}>
-              <ShortcutCard $accent={shortcut.accent}>
-                <ShortcutIconWrap $background={shortcut.iconBackground} $color={shortcut.iconColor}>
-                  {shortcut.icon}
-                </ShortcutIconWrap>
-                <ShortcutTextGroup vertical>
-                  <ShortcutTitle level={3}>{shortcut.title}</ShortcutTitle>
-                  <ShortcutText>{shortcut.description}</ShortcutText>
-                </ShortcutTextGroup>
-                <ShortcutFooter>
-                  {shortcut.disabled ? (
-                    <Button block disabled>
-                      {shortcut.cta}
-                    </Button>
-                  ) : (
-                    <Link to={shortcut.href}>
-                      <Button block type="default" icon={<ArrowRightOutlined />}>
-                        {shortcut.cta}
-                      </Button>
-                    </Link>
-                  )}
-                </ShortcutFooter>
-              </ShortcutCard>
-            </Col>
-          ))}
-        </Row>
       </SectionBlock>
     </PageRoot>
   );

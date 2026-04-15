@@ -27,11 +27,11 @@ import {
 } from '@ant-design/icons';
 import type { UploadChangeParam, UploadFile } from 'antd/es/upload';
 
-import { useCurrentUser } from '@hooks';
+import { useCurrentUser, usePlatformTaxonomy } from '@hooks';
 import { OutletContext } from '@pages';
 
 import { FirstStep } from './components';
-import { useComicCreateStore, useComicTagsQuery, useCreateComicMutation } from './hooks';
+import { useComicCreateStore, useCreateComicMutation } from './hooks';
 import { ChapterDraft, CreateComicPayload, LocalUploadAsset, TagSelectOption } from './types';
 import { validateStep } from './utils';
 
@@ -42,7 +42,7 @@ const { Dragger } = Upload;
 const STEP_ITEMS = [
   {
     title: 'Основа',
-    description: 'Название, описание и теги',
+    description: 'Название, описание, рейтинг, жанр и теги',
   },
   {
     title: 'Медиа',
@@ -93,7 +93,7 @@ export const ComicCreate: FC = () => {
   const navigate = useNavigate();
   const { messageApi } = useOutletContext<OutletContext>();
   const { data: currentUser } = useCurrentUser();
-  const { data: tags = [], isLoading: areTagsLoading } = useComicTagsQuery();
+  const { data: taxonomy, isLoading: isTaxonomyLoading } = usePlatformTaxonomy();
   const { mutation: createComicMutation, uploadState } = useCreateComicMutation();
   const cleanupRef = useRef({
     banner: null as LocalUploadAsset | null,
@@ -104,6 +104,7 @@ export const ComicCreate: FC = () => {
   const {
     title,
     description,
+    ageRating,
     tagIds,
     cover,
     banner,
@@ -140,12 +141,16 @@ export const ComicCreate: FC = () => {
 
   const tagSelectOptions = useMemo<TagSelectOption[]>(
     () =>
-      tags.map((tag) => ({
-        label: tag.title,
-        value: tag.id,
-        option: tag,
+      (taxonomy?.tags || []).map((tag) => ({
+        label: String(tag.label),
+        value: Number(tag.value),
+        option: {
+          id: Number(tag.value),
+          title: String(tag.label),
+          description: tag.description,
+        },
       })),
-    [tags],
+    [taxonomy?.tags],
   );
 
   const canPublish = Boolean(currentUser);
@@ -153,7 +158,9 @@ export const ComicCreate: FC = () => {
   const payload: Partial<CreateComicPayload> = {
     title,
     description,
+    ageRating: ageRating || undefined,
     tagIds,
+    genreId,
     cover,
     banner,
     chapters,
@@ -220,7 +227,7 @@ export const ComicCreate: FC = () => {
     const result = validateStep(currentStep, payload);
 
     if (!result.valid) {
-      messageApi.warning(result.message || 'Проверь заполнение шага.', 5000);
+      messageApi.warning(result.message || 'Проверь заполнение шага.', 5);
       return;
     }
 
@@ -235,7 +242,7 @@ export const ComicCreate: FC = () => {
       return;
     }
 
-    if (!cover || !banner) {
+    if (!cover || !banner || !ageRating || !genreId) {
       return;
     }
 
@@ -243,6 +250,7 @@ export const ComicCreate: FC = () => {
       const response = await createComicMutation.mutateAsync({
         title,
         description,
+        ageRating,
         tagIds,
         genreId,
         cover,
@@ -337,6 +345,21 @@ export const ComicCreate: FC = () => {
               <Text type="secondary">Название</Text>
               <Title level={4} className="!mb-0 !mt-2">
                 {title}
+              </Title>
+            </Card>
+            <Card size="small" className="rounded-2xl bg-slate-50">
+              <Text type="secondary">Возрастной рейтинг</Text>
+              <Title level={4} className="!mb-0 !mt-2">
+                {ageRating}
+              </Title>
+            </Card>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card size="small" className="rounded-2xl bg-slate-50">
+              <Text type="secondary">Жанр</Text>
+              <Title level={4} className="!mb-0 !mt-2">
+                {taxonomy?.genres.find((item) => Number(item.value) === genreId)?.label}
               </Title>
             </Card>
             <Card size="small" className="rounded-2xl bg-slate-50">
@@ -649,7 +672,6 @@ export const ComicCreate: FC = () => {
                                           icon={<DeleteOutlined />}
                                           onClick={() => {
                                             revokeAsset(page);
-
                                             removeChapterPage(chapter.id, pageIndex);
                                           }}
                                         />
@@ -730,7 +752,7 @@ export const ComicCreate: FC = () => {
           </Space>
         </Flex>
 
-        {areTagsLoading ? (
+        {isTaxonomyLoading ? (
           <Flex justify="center" className="py-8">
             <Spin />
           </Flex>

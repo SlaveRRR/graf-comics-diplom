@@ -35,6 +35,7 @@ S3_ACCESS_KEY_ID = os.getenv('S3_ACCESS_KEY_ID')
 S3_SECRET_ACCESS_KEY = os.getenv('S3_SECRET_ACCESS_KEY') 
 S3_REGION_NAME = os.getenv('S3_REGION_NAME')
 S3_PRESIGNED_EXPIRATION = int(os.getenv('S3_PRESIGNED_EXPIRATION'))
+S3_PUBLIC_BASE_URL = os.getenv('S3_PUBLIC_BASE_URL', '')
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication',
     'comics',
+    'interactions',
     'users',
 ]
 
@@ -187,6 +189,7 @@ SPECTACULAR_SETTINGS = {
         {'name': 'Authentication', 'description': 'Authentication and token management endpoints'},
         {'name': 'Users', 'description': 'Current user profile endpoints'},
         {'name': 'Comics', 'description': 'Comics domain endpoints'},
+        {'name': 'Interactions', 'description': 'Comments, likes and favorites endpoints'},
     ],
 }
 

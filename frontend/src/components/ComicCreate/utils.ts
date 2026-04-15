@@ -16,6 +16,20 @@ export const validateStep = (step: number, payload: Partial<CreateComicPayload>)
       };
     }
 
+    if (!payload.ageRating) {
+      return {
+        valid: false,
+        message: 'Выберите возрастной рейтинг.',
+      };
+    }
+
+    if (!payload.genreId) {
+      return {
+        valid: false,
+        message: 'Выберите жанр комикса.',
+      };
+    }
+
     if (!payload.tagIds?.length) {
       return {
         valid: false,

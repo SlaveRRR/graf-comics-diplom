@@ -2,12 +2,18 @@ import { Alert, Button, Divider, Flex, Form, Image, Input, Space, Typography } f
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { FormItem } from 'react-hook-form-antd';
-import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
 
 import { useForm } from '@hooks';
 import { OutletContext } from '@pages';
 import { SignInParams } from '@types';
-import { startHeadlessSocialAuth } from '@utils';
+import {
+  buildAuthPath,
+  getIntentFromSearch,
+  getIntentLabel,
+  getRedirectFromSearch,
+  startHeadlessSocialAuth,
+} from '@utils';
 import GoogleIcon from '@assets/icons/google.svg';
 import VkIcon from '@assets/icons/vk.svg';
 import YandexIcon from '@assets/icons/yandex.svg';
@@ -25,12 +31,16 @@ export const SignIn: FC = () => {
     useResendVerificationEmail();
   const { messageApi } = useOutletContext<OutletContext>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const socialState = searchParams.get('social');
   const socialError = searchParams.get('error');
   const verificationState = searchParams.get('verification');
   const verificationEmail = searchParams.get('email') || '';
   const retryAfter = Number(searchParams.get('retryAfter') || '60');
+  const redirectTo = getRedirectFromSearch(location.search);
+  const intent = getIntentFromSearch(location.search);
+  const intentLabel = getIntentLabel(intent);
   const socialExchangeTriggered = useRef(false);
   const verificationSuccessHandled = useRef(false);
   const [verificationCooldown, setVerificationCooldown] = useState(0);
@@ -129,11 +139,21 @@ export const SignIn: FC = () => {
             Авторизация
           </Title>
 
+          {intentLabel ? (
+            <Alert
+              className="mb-4"
+              type="warning"
+              showIcon
+              message="Нужен аккаунт"
+              description={`Войдите или зарегистрируйтесь, чтобы ${intentLabel}. После входа вы автоматически вернётесь к нужному экрану.`}
+            />
+          ) : null}
+
           {verificationState === 'pending' && verificationEmail ? (
             <Alert
               className="mb-4"
               type="info"
-              title="Подтвердите электронную почту"
+              message="Подтвердите электронную почту"
               description={
                 <Flex vertical gap={12}>
                   <span>
@@ -177,7 +197,7 @@ export const SignIn: FC = () => {
               icon={<Image src={GoogleIcon} preview={false} />}
               block
               disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('google')}
+              onClick={() => startHeadlessSocialAuth('google', redirectTo)}
             />
             <Button
               className="flex items-center px-7 py-5 [&_img]:inline"
@@ -185,7 +205,7 @@ export const SignIn: FC = () => {
               icon={<Image src={YandexIcon} preview={false} />}
               block
               disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('yandex')}
+              onClick={() => startHeadlessSocialAuth('yandex', redirectTo)}
             />
             <Button
               className="flex items-center px-7 py-5 [&_img]:inline"
@@ -193,7 +213,7 @@ export const SignIn: FC = () => {
               icon={<Image src={VkIcon} preview={false} />}
               block
               disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('vk')}
+              onClick={() => startHeadlessSocialAuth('vk', redirectTo)}
             />
           </Space>
 
@@ -201,7 +221,7 @@ export const SignIn: FC = () => {
             <Button loading={isLoading || isSocialExchangeLoading} type="primary" htmlType="submit">
               Войти
             </Button>
-            <Link href="/signup">Ещё нет аккаунта?</Link>
+            <Link href={buildAuthPath('/signup', { intent, redirectTo })}>Ещё нет аккаунта?</Link>
           </Flex>
         </Form>
       </div>

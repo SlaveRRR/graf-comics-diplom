@@ -2,6 +2,7 @@
 import uuid
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -61,6 +62,14 @@ class UploadDraftStatus(models.TextChoices):
     CANCELLED = 'cancelled', 'Отменён'
 
 
+class ComicAgeRating(models.TextChoices):
+    AGE_0 = '0+', '0+'
+    AGE_6 = '6+', '6+'
+    AGE_12 = '12+', '12+'
+    AGE_16 = '16+', '16+'
+    AGE_18 = '18+', '18+'
+
+
 class Comic(TimeStampedModel):
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Черновик'
@@ -71,6 +80,11 @@ class Comic(TimeStampedModel):
     description = models.TextField(blank=True)
     cover = models.CharField(max_length=500, blank=True)
     banner = models.CharField(max_length=500, blank=True)
+    age_rating = models.CharField(
+        max_length=4,
+        choices=ComicAgeRating.choices,
+        default=ComicAgeRating.AGE_16,
+    )
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -89,6 +103,10 @@ class Comic(TimeStampedModel):
         blank=True,
     )
     tags = models.ManyToManyField(Tag, related_name='comics', blank=True)
+    comments = GenericRelation(
+        'interactions.Comment',
+        related_query_name='comic',
+    )
     published_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -107,6 +125,11 @@ class ComicUploadDraft(TimeStampedModel):
     )
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    age_rating = models.CharField(
+        max_length=4,
+        choices=ComicAgeRating.choices,
+        default=ComicAgeRating.AGE_16,
+    )
     genre_id = models.PositiveIntegerField(null=True, blank=True)
     tag_ids = models.JSONField(default=list, blank=True)
     scope_prefix = models.CharField(max_length=500, unique=True)
@@ -206,29 +229,6 @@ class ChapterUploadDraft(TimeStampedModel):
         return f'Chapter draft {self.id}'
 
 
-class ComicComment(TimeStampedModel):
-    comic = models.ForeignKey(Comic, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='comic_comments',
-    )
-    text = models.TextField()
-    reply_to = models.ForeignKey(
-        'self',
-        on_delete=models.CASCADE,
-        related_name='replies',
-        null=True,
-        blank=True,
-    )
-
-    class Meta:
-        ordering = ('created_at',)
-
-    def __str__(self):
-        return f'Comment #{self.pk} for {self.comic.title}'
-
-
 class ComicRating(TimeStampedModel):
     comic = models.ForeignKey(Comic, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(
@@ -262,3 +262,33 @@ class ComicStats(models.Model):
 
     def __str__(self):
         return f'Stats for {self.comic.title}'
+
+
+class ComicReadingProgress(TimeStampedModel):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='comic_reading_progress',
+    )
+    comic = models.ForeignKey(
+        Comic,
+        on_delete=models.CASCADE,
+        related_name='reading_progress',
+    )
+    chapter = models.ForeignKey(
+        Chapter,
+        on_delete=models.CASCADE,
+        related_name='reading_progress',
+    )
+    last_page = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'comic'),
+                name='unique_reading_progress_per_user_and_comic',
+            ),
+        ]
+
+    def __str__(self):
+        return f'{self.user.username} progress for {self.comic.title}'

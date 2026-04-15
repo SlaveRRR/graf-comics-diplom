@@ -18,6 +18,7 @@ export interface ChapterDraft {
 export interface ComicCreateState {
   title: string;
   description: string;
+  ageRating: string | null;
   tagIds: number[];
   genreId: number;
   cover: LocalUploadAsset | null;
@@ -29,6 +30,7 @@ export interface ComicCreateState {
 export interface ComicCreateActions {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
+  setAgeRating: (ageRating: string | null) => void;
   setTagIds: (tagIds: number[]) => void;
   setGenreId: (genreId: number) => void;
   setCover: (cover: LocalUploadAsset | null) => void;
@@ -49,6 +51,7 @@ export type ComicCreateStore = ComicCreateState & ComicCreateActions;
 export interface CreateComicPayload {
   title: string;
   description: string;
+  ageRating: string;
   tagIds: number[];
   genreId: number;
   cover: LocalUploadAsset;

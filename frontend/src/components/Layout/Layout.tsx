@@ -1,4 +1,4 @@
-import { Badge, Drawer, Space, theme } from 'antd';
+﻿import { Badge, Button, Drawer, Space, theme } from 'antd';
 import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -17,6 +17,7 @@ import {
 
 import { colors } from '@constants';
 import { useApp } from '@hooks';
+import { buildAuthPath, getCurrentRelativeUrl } from '@utils';
 
 import {
   drawerStyles,
@@ -41,6 +42,11 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
   } = theme.useToken();
 
   const { user, isAuth } = useApp();
+  const isReaderRoute = /^\/comics\/[^/]+\/chapters\/[^/]+/.test(location.pathname);
+  const signInHref = buildAuthPath('/signin', {
+    redirectTo: getCurrentRelativeUrl(location.pathname, location.search, location.hash),
+  });
+  const accountHref = isAuth ? '/account' : signInHref;
 
   useEffect(() => {
     const handleResize = () => {
@@ -61,39 +67,47 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const selectedKey = location.pathname.startsWith('/catalog') ? 'catalog' : location.pathname === '/' ? 'home' : '';
+  const selectedKey = useMemo(() => {
+    if (location.pathname === '/') {
+      return 'home';
+    }
+
+    if (location.pathname.startsWith('/catalog')) {
+      return 'catalog';
+    }
+
+    if (location.pathname.startsWith('/favorites')) {
+      return 'favorites';
+    }
+
+    if (location.pathname.startsWith('/profile') || location.pathname.startsWith('/account')) {
+      return 'profile';
+    }
+
+    return '';
+  }, [location.pathname]);
 
   const menuItems = useMemo(
     () => [
       { key: 'home', icon: <HomeOutlined />, label: <Link to="/">Главная</Link> },
       { key: 'catalog', icon: <CompassOutlined />, label: <Link to="/catalog">Каталог</Link> },
-      { key: '3', icon: <FireOutlined />, label: 'Популярное' },
-      { key: '4', icon: <ClockCircleOutlined />, label: 'Блог' },
-      { key: '5', icon: <HistoryOutlined />, label: 'История' },
-      { key: '6', icon: <HeartOutlined />, label: 'Избранное' },
-      { key: '7', icon: <BookOutlined />, label: 'Моя библиотека' },
+      { key: 'popular', icon: <FireOutlined />, label: 'Популярное' },
+      { key: 'blog', icon: <ClockCircleOutlined />, label: 'Блог' },
+      { key: 'history', icon: <HistoryOutlined />, label: 'История' },
+      { key: 'favorites', icon: <HeartOutlined />, label: <Link to="/favorites">Избранное</Link> },
+      { key: 'library', icon: <BookOutlined />, label: 'Моя библиотека' },
       { type: 'divider' as const },
-      { key: '8', icon: <TeamOutlined />, label: 'Сообщество' },
-      { key: '9', icon: <UserOutlined />, label: 'Профиль' },
+      { key: 'community', icon: <TeamOutlined />, label: 'Сообщество' },
+      { key: 'profile', icon: <UserOutlined />, label: <Link to={accountHref}>Кабинет</Link> },
     ],
-    [],
+    [accountHref],
   );
 
-  const menuContent = () => {
-    return (
-      <>
-        {/* <MenuHeader $borderColor={colorBorderSecondary} $withClose={withClose}>
-          {withClose && <Button type="text" icon={<CloseOutlined />} onClick={() => setMobileMenuOpen(false)} />}
-        </MenuHeader> */}
-
-        <NavigationMenu mode="inline" selectedKeys={[selectedKey]} items={menuItems} />
-      </>
-    );
-  };
+  const menuContent = () => <NavigationMenu mode="inline" selectedKeys={[selectedKey]} items={menuItems} />;
 
   return (
     <RootLayout>
-      {!isMobile && (
+      {!isReaderRoute && !isMobile && (
         <Sidebar
           collapsible
           collapsed={collapsed}
@@ -107,45 +121,63 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
         </Sidebar>
       )}
 
-      <Drawer
-        placement="left"
-        closable={false}
-        onClose={() => setMobileMenuOpen(false)}
-        open={isMobile && mobileMenuOpen}
-        size={280}
-        mask={true}
-        maskClosable={true}
-        styles={drawerStyles}
-      >
-        {menuContent()}
-      </Drawer>
+      {!isReaderRoute ? (
+        <Drawer
+          placement="left"
+          closable={false}
+          onClose={() => setMobileMenuOpen(false)}
+          open={isMobile && mobileMenuOpen}
+          size={280}
+          mask
+          maskClosable
+          styles={drawerStyles}
+        >
+          {menuContent()}
+        </Drawer>
+      ) : null}
 
-      <MainLayout $isMobile={isMobile} $collapsed={collapsed}>
-        <MainHeader $background={colorBgContainer} $borderColor={colorBorderSecondary}>
-          <MenuToggleButton
-            type="text"
-            icon={isMobile ? <MenuUnfoldOutlined /> : collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => (isMobile ? setMobileMenuOpen(true) : setCollapsed((prev) => !prev))}
-          />
-
-          <Space size="middle" classNames={{ item: 'inline-flex' }}>
-            <Badge count={5}>
-              <NotificationIcon $color={colorTextSecondary} />
-            </Badge>
-            <UserAvatar
-              alt="user avatar"
-              icon={<UserOutlined />}
-              $background={colors.surface.brandSubtle}
-              $color={colorPrimary}
-              $borderColor={colorBorderSecondary}
-              {...(isAuth && {
-                src: user?.avatar,
-              })}
+      <MainLayout $isMobile={isMobile} $collapsed={collapsed} $isReaderMode={isReaderRoute}>
+        {!isReaderRoute ? (
+          <MainHeader $background={colorBgContainer} $borderColor={colorBorderSecondary}>
+            <MenuToggleButton
+              type="text"
+              icon={isMobile ? <MenuUnfoldOutlined /> : collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => (isMobile ? setMobileMenuOpen(true) : setCollapsed((prev) => !prev))}
             />
-          </Space>
-        </MainHeader>
 
-        <MainContent $background={colors.surface.base} $isMobile={isMobile} $radius={borderRadiusLG}>
+            <Space size="middle" classNames={{ item: 'inline-flex' }}>
+              {isAuth ? (
+                <Badge count={5}>
+                  <NotificationIcon $color={colorTextSecondary} />
+                </Badge>
+              ) : null}
+
+              {isAuth ? (
+                <Link to="/account">
+                  <UserAvatar
+                    alt="user avatar"
+                    icon={<UserOutlined />}
+                    $background={colors.surface.brandSubtle}
+                    $color={colorPrimary}
+                    $borderColor={colorBorderSecondary}
+                    src={user?.avatar}
+                  />
+                </Link>
+              ) : (
+                <Link to={signInHref}>
+                  <Button type="primary">Войти</Button>
+                </Link>
+              )}
+            </Space>
+          </MainHeader>
+        ) : null}
+
+        <MainContent
+          $background={isReaderRoute ? '#1c1623' : colors.surface.base}
+          $isMobile={isMobile}
+          $radius={borderRadiusLG}
+          $isReaderMode={isReaderRoute}
+        >
           {children}
         </MainContent>
       </MainLayout>

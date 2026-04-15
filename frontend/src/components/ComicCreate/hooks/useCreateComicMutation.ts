@@ -37,6 +37,7 @@ export const useCreateComicMutation = () => {
         genreId: payload.genreId,
         title: payload.title,
         description: payload.description,
+        ageRating: payload.ageRating,
         tagIds: payload.tagIds,
         cover: getFilePayload(payload.cover.file),
         banner: getFilePayload(payload.banner.file),

@@ -1,1 +1,1 @@
-export { useCatalogStore } from './useCatalogStore';
+export { useCatalogQuery } from './useCatalogStore';

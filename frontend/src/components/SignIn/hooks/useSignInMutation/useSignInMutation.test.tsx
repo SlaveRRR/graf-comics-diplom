@@ -30,6 +30,9 @@ vi.mock('react-router-dom', () => ({
       error: () => mockError(),
     },
   }),
+  useLocation: () => ({
+    search: '',
+  }),
   useNavigate: () => mockNavigate,
 }));
 

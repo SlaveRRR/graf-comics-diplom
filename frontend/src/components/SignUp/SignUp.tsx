@@ -2,10 +2,11 @@ import { Button, Divider, Flex, Form, Image, Input, Space, Typography } from 'an
 import { FC } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { FormItem } from 'react-hook-form-antd';
+import { useLocation } from 'react-router-dom';
 
 import { useForm } from '@hooks';
 import { SignUpParams } from '@types';
-import { startHeadlessSocialAuth } from '@utils';
+import { getRedirectFromSearch, startHeadlessSocialAuth } from '@utils';
 import GoogleIcon from '@assets/icons/google.svg';
 import VkIcon from '@assets/icons/vk.svg';
 import YandexIcon from '@assets/icons/yandex.svg';
@@ -18,6 +19,8 @@ const { Title, Link, Text } = Typography;
 export const SignUp: FC = () => {
   const { handleSubmit, control } = useForm(signUpFormSchema);
   const { mutate, isLoading } = useSignUpMutation();
+  const location = useLocation();
+  const redirectTo = getRedirectFromSearch(location.search);
 
   const submitHanlder: SubmitHandler<SignUpFormSchema> = (data) => mutate(data as SignUpParams);
 
@@ -49,23 +52,23 @@ export const SignUp: FC = () => {
             <Button
               className="px-7 py-5 flex items-center [&_img]:inline"
               size="large"
-              icon={<Image src={GoogleIcon} />}
+              icon={<Image src={GoogleIcon} preview={false} />}
               block
-              onClick={() => startHeadlessSocialAuth('google')}
+              onClick={() => startHeadlessSocialAuth('google', redirectTo)}
             />
             <Button
               className="px-7 py-5 flex items-center [&_img]:inline"
               size="large"
-              icon={<Image src={YandexIcon} />}
+              icon={<Image src={YandexIcon} preview={false} />}
               block
-              onClick={() => startHeadlessSocialAuth('yandex')}
+              onClick={() => startHeadlessSocialAuth('yandex', redirectTo)}
             />
             <Button
               className="px-7 py-5 flex items-center [&_img]:inline"
               size="large"
-              icon={<Image src={VkIcon} />}
+              icon={<Image src={VkIcon} preview={false} />}
               block
-              onClick={() => startHeadlessSocialAuth('vk')}
+              onClick={() => startHeadlessSocialAuth('vk', redirectTo)}
             />
           </Space>
 

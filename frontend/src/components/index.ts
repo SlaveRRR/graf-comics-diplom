@@ -1,3 +1,4 @@
+export * from './Account';
 export * from './Home';
 export * from './Layout';
 export * from './shared';
@@ -5,3 +6,7 @@ export * from './SignIn';
 export * from './SignUp';
 export * from './Catalog';
 export * from './ComicCreate';
+export * from './ComicDetails';
+export * from './ComicReader';
+export * from './Profile';
+export * from './Favorites';

@@ -1,10 +1,11 @@
 import { AxiosError } from 'axios';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from '@api';
 import { CURRENT_USER_QUERY_KEY, useApp, useLocalStorage } from '@hooks';
 import { OutletContext } from '@pages';
+import { consumePendingAuthRedirect, getRedirectFromSearch } from '@utils';
 
 export const useSocialSessionExchange = () => {
   const { setItem } = useLocalStorage();
@@ -12,6 +13,7 @@ export const useSocialSessionExchange = () => {
   const { messageApi } = useOutletContext<OutletContext>();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return useMutation({
     mutationFn: api.exchangeSocialSession,
@@ -23,7 +25,7 @@ export const useSocialSessionExchange = () => {
       setItem('token', data.data['access_token']);
       setIsAuth(true);
       queryClient.invalidateQueries([CURRENT_USER_QUERY_KEY]);
-      navigate('/', { replace: true });
+      navigate(consumePendingAuthRedirect() || getRedirectFromSearch(location.search), { replace: true });
     },
   });
 };

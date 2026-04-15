@@ -6,6 +6,7 @@ export const createBrowserRouter = (routes) => routes;
 
 export const useLocation = () => ({
   pathname: '',
+  search: '',
 });
 
 export const Link = () => <div data-testid="link" />;

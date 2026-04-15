@@ -10,6 +10,11 @@ vi.mock('@pages', () => ({
   SwaggerPage: () => <></>,
   CatalogPage: () => <></>,
   CreateComicPage: () => <></>,
+  FavoritesPage: () => <></>,
+  AccountPage: () => <></>,
+  ProfilePage: () => <></>,
+  ComicDetailsPage: () => <></>,
+  ComicReaderPage: () => <></>,
 }));
 
 vi.mock('./utils', () => ({

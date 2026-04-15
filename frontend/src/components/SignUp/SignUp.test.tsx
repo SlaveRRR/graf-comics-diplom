@@ -11,6 +11,7 @@ vi.mock('@hooks', () => ({
 
 vi.mock('@utils', () => ({
   startHeadlessSocialAuth: vi.fn(),
+  getRedirectFromSearch: vi.fn(),
 }));
 
 const mockMutate = vi.fn();

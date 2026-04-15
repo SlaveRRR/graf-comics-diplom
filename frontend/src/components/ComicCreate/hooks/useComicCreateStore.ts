@@ -13,6 +13,7 @@ const createChapterDraft = (chapterNumber: number): ChapterDraft => ({
 const initialState = {
   title: '',
   description: '',
+  ageRating: null,
   tagIds: [],
   genreId: null,
   cover: null,
@@ -25,6 +26,7 @@ export const useComicCreateStore = create<ComicCreateStore>()((set) => ({
   ...initialState,
   setTitle: (title) => set({ title }),
   setDescription: (description) => set({ description }),
+  setAgeRating: (ageRating) => set({ ageRating }),
   setTagIds: (tagIds) => set({ tagIds }),
   setGenreId: (genreId) => set({ genreId }),
   setCover: (cover) => set({ cover }),

@@ -76,8 +76,8 @@ export const NavigationMenu = styled(Menu)({
   marginTop: space(2),
 });
 
-export const MainLayout = styled(AntdLayout)<MainLayoutStyledProps>(({ $isMobile, $collapsed }) => ({
-  marginLeft: $isMobile ? 0 : $collapsed ? 64 : 240,
+export const MainLayout = styled(AntdLayout)<MainLayoutStyledProps>(({ $isMobile, $collapsed, $isReaderMode }) => ({
+  marginLeft: $isReaderMode ? 0 : $isMobile ? 0 : $collapsed ? 64 : 240,
   transition: 'margin-left 0.2s ease',
   minHeight: '100vh',
 }));
@@ -111,8 +111,10 @@ export const UserAvatar = styled(Avatar)<UserAvatarStyledProps>(({ $background, 
   border: `1px solid ${$borderColor}`,
 }));
 
-export const MainContent = styled(Content)<MainContentStyledProps>(({ $background, $isMobile, $radius }) => ({
-  padding: 'var(--space-page-y) var(--space-page-x)',
-  background: $background,
-  borderTopLeftRadius: $isMobile ? 0 : $radius,
-}));
+export const MainContent = styled(Content)<MainContentStyledProps>(
+  ({ $background, $isMobile, $radius, $isReaderMode }) => ({
+    padding: $isReaderMode ? 0 : 'var(--space-page-y) var(--space-page-x)',
+    background: $background,
+    borderTopLeftRadius: $isReaderMode || $isMobile ? 0 : $radius,
+  }),
+);

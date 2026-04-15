@@ -20,6 +20,7 @@ export type BrandTitleStyledProps = {
 export type MainLayoutStyledProps = {
   $isMobile: boolean;
   $collapsed: boolean;
+  $isReaderMode: boolean;
 };
 
 export type MainHeaderStyledProps = {
@@ -41,4 +42,5 @@ export type MainContentStyledProps = {
   $background: string;
   $isMobile: boolean;
   $radius: number;
+  $isReaderMode: boolean;
 };

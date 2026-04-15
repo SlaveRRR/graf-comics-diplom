@@ -56,3 +56,22 @@ def build_chapter_page_key(user_id, comic_draft_id, chapter_draft_id, page_order
         f'drafts/{user_id}/comics/{comic_draft_id}/chapters/{chapter_draft_id}/'
         f'{page_order:03d}{get_file_extension(filename)}'
     )
+
+
+
+def build_user_avatar_key(user_id, avatar_draft_id, filename):
+    return f'users/{user_id}/avatars/{avatar_draft_id}{get_file_extension(filename)}'
+
+
+
+def build_public_media_url(object_key):
+    if not object_key:
+        return ''
+
+    if object_key.startswith(('http://', 'https://')):
+        return object_key
+
+    if not settings.S3_PUBLIC_BASE_URL:
+        return object_key
+
+    return f"{settings.S3_PUBLIC_BASE_URL.rstrip('/')}/{object_key.lstrip('/')}"

@@ -1,9 +1,22 @@
 import axios from 'axios';
 
 import {
+  ACCOUNT_AVATAR_CONFIRM_ENDPOINT,
+  ACCOUNT_AVATAR_UPLOAD_CONFIG_ENDPOINT,
+  ACCOUNT_ENDPOINT,
+  COMICS_CATALOG_ENDPOINT,
   COMICS_CONFIRM_ENDPOINT,
   COMICS_UPLOAD_CONFIG_ENDPOINT,
   CURRENT_USER_ENDPOINT,
+  FAVORITE_COMICS_ENDPOINT,
+  getComicCommentsEndpoint,
+  getComicDetailsEndpoint,
+  getComicFavoriteEndpoint,
+  getComicLikeEndpoint,
+  getComicReaderEndpoint,
+  getComicReadingProgressEndpoint,
+  getUserFollowEndpoint,
+  getUserProfileEndpoint,
   LOGOUT_ENDPOINT,
   REFRESH_TOKEN_ENDPOINT,
   SIGNIN_ENDPOINT,
@@ -14,8 +27,19 @@ import {
 } from '@constants';
 import {
   AccesTokenResponse,
+  AvatarUploadConfigPayload,
+  AvatarUploadConfigResponse,
+  AvatarUploadConfirmPayload,
+  AvatarUploadConfirmResponse,
+  CatalogComicResponse,
+  ComicComment,
+  ComicCommentCreatePayload,
   ComicConfirmPayload,
   ComicConfirmResponse,
+  ComicDetailsResponse,
+  ComicInteractionResponse,
+  ComicReaderResponse,
+  ComicReadingProgress,
   ComicUploadConfigPayload,
   ComicUploadConfigResponse,
   Response,
@@ -23,6 +47,10 @@ import {
   SignUpParams,
   TaxonomyPlatformData,
   User,
+  UserAccount,
+  UserFollowToggleResponse,
+  UserProfile,
+  UserProfileUpdatePayload,
   VerificationEmailResponse,
 } from '@types';
 
@@ -57,6 +85,30 @@ class Api {
     return axiosInstance.get<Response<User>>(CURRENT_USER_ENDPOINT);
   }
 
+  async updateCurrentUser(data: UserProfileUpdatePayload) {
+    return axiosInstance.put<User | Response<User>>(CURRENT_USER_ENDPOINT, data);
+  }
+
+  async getAccount() {
+    return axiosInstance.get<Response<UserAccount>>(ACCOUNT_ENDPOINT);
+  }
+
+  async getAccountAvatarUploadConfig(data: AvatarUploadConfigPayload) {
+    return axiosInstance.post<Response<AvatarUploadConfigResponse>>(ACCOUNT_AVATAR_UPLOAD_CONFIG_ENDPOINT, data);
+  }
+
+  async confirmAccountAvatarUpload(data: AvatarUploadConfirmPayload) {
+    return axiosInstance.post<Response<AvatarUploadConfirmResponse>>(ACCOUNT_AVATAR_CONFIRM_ENDPOINT, data);
+  }
+
+  async getUserProfile(userId: string | number) {
+    return axiosInstance.get<Response<UserProfile>>(getUserProfileEndpoint(userId));
+  }
+
+  async toggleUserFollow(userId: string | number) {
+    return axiosInstance.post<Response<UserFollowToggleResponse>>(getUserFollowEndpoint(userId));
+  }
+
   async getComicUploadConfig(data: ComicUploadConfigPayload) {
     return axiosInstance.post<Response<ComicUploadConfigResponse>>(COMICS_UPLOAD_CONFIG_ENDPOINT, data);
   }
@@ -71,6 +123,40 @@ class Api {
 
   async getPlatformTaxonomy() {
     return axiosInstance.get<Response<TaxonomyPlatformData>>(TAXONOMY_PLATFORM_ENDPOINT);
+  }
+
+  async getComicDetails(comicId: string | number) {
+    return axiosInstance.get<Response<ComicDetailsResponse>>(getComicDetailsEndpoint(comicId));
+  }
+
+  async getCatalogComics() {
+    return axiosInstance.get<Response<CatalogComicResponse[]>>(COMICS_CATALOG_ENDPOINT);
+  }
+
+  async getFavoriteComics() {
+    return axiosInstance.get<Response<CatalogComicResponse[]>>(FAVORITE_COMICS_ENDPOINT);
+  }
+
+  async createComicComment(comicId: string | number, data: ComicCommentCreatePayload) {
+    return axiosInstance.post<Response<ComicComment>>(getComicCommentsEndpoint(comicId), data);
+  }
+
+  async toggleComicFavorite(comicId: string | number) {
+    return axiosInstance.post<Response<ComicInteractionResponse>>(getComicFavoriteEndpoint(comicId));
+  }
+
+  async toggleComicLike(comicId: string | number) {
+    return axiosInstance.post<Response<ComicInteractionResponse>>(getComicLikeEndpoint(comicId));
+  }
+
+  async getComicReader(comicId: string | number, chapterId: string | number) {
+    return axiosInstance.get<Response<ComicReaderResponse>>(getComicReaderEndpoint(comicId, chapterId));
+  }
+
+  async updateComicReadingProgress(comicId: string | number, chapterId: string | number, lastPage: number) {
+    return axiosInstance.post<Response<ComicReadingProgress>>(getComicReadingProgressEndpoint(comicId, chapterId), {
+      lastPage,
+    });
   }
 }
 
