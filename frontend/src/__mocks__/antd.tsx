@@ -74,3 +74,5 @@ export const theme = {
     hashId: {},
   }),
 };
+
+export const Empty = () => <div data-testid="empty" />;

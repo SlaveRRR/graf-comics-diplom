@@ -1,6 +1,6 @@
 ﻿import { Button, Card, Carousel, Col, Input, Row, Segmented, Space, theme, Tour, Typography } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { colors } from '@constants';
 import { useAdultContentGate, usePlatformTaxonomy } from '@hooks';
@@ -23,6 +23,7 @@ export const Catalog = () => {
   const { data: items = [], isLoading } = useCatalogQuery();
   const { data: taxonomy, isLoading: isLoadingTaxonomy } = usePlatformTaxonomy();
   const { guardNavigation, adultContentModal } = useAdultContentGate();
+  const [searchParams] = useSearchParams();
 
   const [searchValue, setSearchValue] = useState('');
   const [genreId, setGenreId] = useState<SelectValue>();
@@ -44,6 +45,25 @@ export const Catalog = () => {
       window.sessionStorage.setItem(firstVisitKey, 'true');
     }
   }, []);
+
+  useEffect(() => {
+    const genreParam = searchParams.get('genre');
+    const tagParam = searchParams.get('tag');
+
+    if (genreParam) {
+      const parsedGenreId = Number(genreParam);
+      if (!Number.isNaN(parsedGenreId)) {
+        setGenreId(parsedGenreId);
+      }
+    }
+
+    if (tagParam) {
+      const parsedTagId = Number(tagParam);
+      if (!Number.isNaN(parsedTagId)) {
+        setTagIds([parsedTagId]);
+      }
+    }
+  }, [searchParams]);
 
   const filteredItems = useMemo(() => {
     let filtered = [...items];
