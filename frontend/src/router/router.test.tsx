@@ -20,6 +20,7 @@ vi.mock('@pages', () => ({
   CreateBlogPostPage: () => <></>,
   BlogPage: () => <></>,
   BlogPostPage: () => <></>,
+  UserAgreementPage: () => <></>,
 }));
 
 vi.mock('./utils', () => ({

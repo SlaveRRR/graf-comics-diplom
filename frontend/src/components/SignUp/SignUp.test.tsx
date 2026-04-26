@@ -6,7 +6,16 @@ vi.mock('@hooks', () => ({
   useForm: () => ({
     handleSubmit: (callback) => callback(),
     control: {},
+    formState: {
+      errors: {},
+    },
+    getValues: () => {},
+    trigger: () => {},
   }),
+}));
+
+vi.mock('react-hook-form', () => ({
+  Controller: () => <></>,
 }));
 
 vi.mock('@utils', () => ({

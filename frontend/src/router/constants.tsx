@@ -16,6 +16,7 @@ import {
   SignInPage,
   SignUpPage,
   SwaggerPage,
+  UserAgreementPage,
 } from '@pages';
 
 import { Route } from './types';
@@ -99,6 +100,10 @@ export const ROUTES: Route[] = [
       {
         path: '/profile/:userId',
         page: <ProfilePage />,
+      },
+      {
+        path: '/user-agreement',
+        page: <UserAgreementPage />,
       },
     ],
   },

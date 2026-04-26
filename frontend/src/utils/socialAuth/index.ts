@@ -1,1 +1,1 @@
-export { startHeadlessSocialAuth } from './socialAuth';
+export { startHeadlessSocialAuth, type SocialProvider } from './socialAuth';
