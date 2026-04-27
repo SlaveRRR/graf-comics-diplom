@@ -517,12 +517,6 @@ export const BlogCreate: FC = () => {
                 </Flex>
               </Flex>
 
-              <div className="rounded-2xl border border-dashed border-black/8 bg-black/[0.015] px-4 py-3">
-                <Text type="secondary">
-                  Селект меняет тип текущего блока, а кнопки работают по выделению или по текущей позиции курсора.
-                </Text>
-              </div>
-
               <input
                 ref={fileInputRef}
                 type="file"

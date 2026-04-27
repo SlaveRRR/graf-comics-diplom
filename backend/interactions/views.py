@@ -11,13 +11,15 @@ from comics.services import build_public_media_url
 from core.api import error_response, success_response
 from interactions.models import Notification, PostReadingHistory
 from interactions.serializers import (
+    NotificationDeleteRequestSerializer,
+    NotificationDeleteResponseSerializer,
     NotificationListSerializer,
     NotificationMarkReadRequestSerializer,
     NotificationMarkReadResponseSerializer,
     NotificationSerializer,
     ReadingHistoryResponseSerializer,
 )
-from interactions.services import mark_notifications_as_read
+from interactions.services import delete_notifications, mark_notifications_as_read
 
 
 class InteractionsAccessMixin:
@@ -45,6 +47,7 @@ class NotificationListView(InteractionsAccessMixin, APIView):
                 {
                     'id': item.id,
                     'message': item.message,
+                    'link': item.link,
                     'type': item.type,
                     'isRead': bool(item.read_at),
                     'created_at': item.created_at,
@@ -80,6 +83,36 @@ class NotificationMarkReadView(InteractionsAccessMixin, APIView):
             NotificationMarkReadResponseSerializer(
                 {
                     'updatedCount': updated_count,
+                    'unreadCount': unread_count,
+                }
+            ).data,
+            status.HTTP_200_OK,
+        )
+
+
+class NotificationDeleteView(InteractionsAccessMixin, APIView):
+    @extend_schema(
+        tags=['Interactions'],
+        request=NotificationDeleteRequestSerializer,
+        responses={200: NotificationDeleteResponseSerializer},
+        summary='Delete one or multiple notifications',
+    )
+    def post(self, request):
+        access_error = self.ensure_authenticated(request.user)
+        if access_error:
+            return access_error
+
+        serializer = NotificationDeleteRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        notifications = Notification.objects.filter(user=request.user, id__in=serializer.validated_data['ids'])
+        deleted_count = delete_notifications(notifications=notifications)
+        unread_count = request.user.notifications.filter(read_at__isnull=True).count()
+
+        return success_response(
+            NotificationDeleteResponseSerializer(
+                {
+                    'deletedCount': deleted_count,
                     'unreadCount': unread_count,
                 }
             ).data,

@@ -112,6 +112,7 @@ class Notification(TimeStampedModel):
         related_name='notifications',
     )
     message = models.CharField(max_length=255)
+    link = models.CharField(max_length=500, blank=True)
     type = models.CharField(max_length=16, choices=Type.choices, default=Type.INFO)
     read_at = models.DateTimeField(null=True, blank=True)
 

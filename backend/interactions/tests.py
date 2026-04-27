@@ -2,9 +2,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from rest_framework.test import APITestCase
 
 from comics.models import Comic
-from interactions.models import Comment
+from interactions.models import Comment, Notification
 
 User = get_user_model()
 
@@ -47,3 +48,44 @@ class CommentModelTests(TestCase):
 
         with self.assertRaises(ValidationError):
             invalid_reply.clean()
+
+
+class NotificationApiTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='notification-user',
+            email='notification-user@example.com',
+            password='strongpass123',
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_mark_read_updates_only_unread_notifications(self):
+        unread_notification = Notification.objects.create(user=self.user, message='Новое уведомление')
+        read_notification = Notification.objects.create(
+            user=self.user,
+            message='Уже прочитано',
+            read_at=unread_notification.created_at,
+        )
+
+        response = self.client.post(
+            '/api/v1/notifications/read/',
+            {'ids': [unread_notification.id, read_notification.id]},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['data']['updatedCount'], 1)
+
+    def test_delete_removes_selected_notifications(self):
+        unread_notification = Notification.objects.create(user=self.user, message='Удалить меня')
+        read_notification = Notification.objects.create(user=self.user, message='И меня тоже')
+
+        response = self.client.post(
+            '/api/v1/notifications/delete/',
+            {'ids': [unread_notification.id, read_notification.id]},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['data']['deletedCount'], 2)
+        self.assertEqual(Notification.objects.filter(user=self.user).count(), 0)

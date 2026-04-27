@@ -401,10 +401,6 @@ export const Account: FC = () => {
                 <Title level={3} className="!mb-0">
                   Мои посты
                 </Title>
-                <Text type="secondary">
-                  В блоге отображаются только опубликованные посты, а здесь видны все статусы: от черновика до доработки
-                  или блокировки.
-                </Text>
               </Flex>
 
               <Segmented<PostFilterValue>

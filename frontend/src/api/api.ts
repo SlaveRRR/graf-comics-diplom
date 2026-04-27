@@ -25,6 +25,7 @@ import {
   getUserFollowEndpoint,
   getUserProfileEndpoint,
   LOGOUT_ENDPOINT,
+  NOTIFICATIONS_DELETE_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   NOTIFICATIONS_READ_ENDPOINT,
   READING_HISTORY_ENDPOINT,
@@ -62,6 +63,8 @@ import {
   ComicReadingProgress,
   ComicUploadConfigPayload,
   ComicUploadConfigResponse,
+  NotificationDeletePayload,
+  NotificationDeleteResponse,
   NotificationListResponse,
   NotificationMarkReadPayload,
   NotificationMarkReadResponse,
@@ -131,6 +134,10 @@ class Api {
 
   async markNotificationsRead(data: NotificationMarkReadPayload) {
     return axiosInstance.post<Response<NotificationMarkReadResponse>>(NOTIFICATIONS_READ_ENDPOINT, data);
+  }
+
+  async deleteNotifications(data: NotificationDeletePayload) {
+    return axiosInstance.post<Response<NotificationDeleteResponse>>(NOTIFICATIONS_DELETE_ENDPOINT, data);
   }
 
   async getReadingHistory() {

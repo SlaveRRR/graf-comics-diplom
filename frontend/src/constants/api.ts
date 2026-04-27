@@ -18,6 +18,7 @@ export const ACCOUNT_AVATAR_UPLOAD_CONFIG_ENDPOINT = '/account/avatar-upload-con
 export const ACCOUNT_AVATAR_CONFIRM_ENDPOINT = '/account/avatar-confirm/';
 export const NOTIFICATIONS_ENDPOINT = '/notifications/';
 export const NOTIFICATIONS_READ_ENDPOINT = '/notifications/read/';
+export const NOTIFICATIONS_DELETE_ENDPOINT = '/notifications/delete/';
 export const READING_HISTORY_ENDPOINT = '/history/';
 
 export const getUserProfileEndpoint = (userId: string | number) => `/profiles/${userId}/`;

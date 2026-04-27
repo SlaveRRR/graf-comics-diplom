@@ -97,6 +97,7 @@ class Comic(TimeStampedModel):
         choices=Status.choices,
         default=Status.DRAFT,
     )
+    moderation_message = models.TextField(blank=True)
     genre = models.ForeignKey(
         Genre,
         on_delete=models.PROTECT,

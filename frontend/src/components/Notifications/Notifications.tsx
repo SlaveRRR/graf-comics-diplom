@@ -1,12 +1,12 @@
 import { Alert, Button, Card, Checkbox, Empty, Flex, List, Space, Typography } from 'antd';
-import { useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { CheckOutlined, MailOutlined } from '@ant-design/icons';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { CheckOutlined, DeleteOutlined, MailOutlined } from '@ant-design/icons';
 
 import { NotificationItem } from '@types';
 import { OutletContext } from '@pages/LayoutPage/types';
 
-import { useMarkNotificationsReadMutation, useNotificationsQuery } from './hooks';
+import { useDeleteNotificationsMutation, useMarkNotificationsReadMutation, useNotificationsQuery } from './hooks';
 
 const { Text, Title } = Typography;
 
@@ -20,28 +20,65 @@ const formatDate = (value: string) =>
   }).format(new Date(value));
 
 export const Notifications = () => {
+  const navigate = useNavigate();
   const { messageApi } = useOutletContext<OutletContext>();
   const { data, isLoading } = useNotificationsQuery();
   const markReadMutation = useMarkNotificationsReadMutation();
+  const deleteMutation = useDeleteNotificationsMutation();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const unreadIds = useMemo(
     () => data?.items.filter((item) => !item.isRead).map((item) => item.id) ?? [],
     [data?.items],
   );
+  const selectedUnreadIds = useMemo(() => selectedIds.filter((id) => unreadIds.includes(id)), [selectedIds, unreadIds]);
+
+  useEffect(() => {
+    const existingIds = new Set(data?.items.map((item) => item.id) ?? []);
+    setSelectedIds((current) => current.filter((id) => existingIds.has(id)));
+  }, [data?.items]);
 
   const handleMarkRead = async (ids: number[]) => {
+    const unreadOnlyIds = ids.filter((id) => unreadIds.includes(id));
+
+    if (!unreadOnlyIds.length) {
+      messageApi.info('Среди выбранных уведомлений нет новых.');
+      return;
+    }
+
+    try {
+      const result = await markReadMutation.mutateAsync(unreadOnlyIds);
+      setSelectedIds((current) => current.filter((id) => !unreadOnlyIds.includes(id)));
+      messageApi.success(`Отмечено как прочитанное: ${result.updatedCount}.`);
+    } catch (error) {
+      messageApi.error(error instanceof Error ? error.message : 'Не удалось обновить уведомления.');
+    }
+  };
+
+  const handleDelete = async (ids: number[]) => {
     if (!ids.length) {
       return;
     }
 
     try {
-      const result = await markReadMutation.mutateAsync(ids);
+      const result = await deleteMutation.mutateAsync(ids);
       setSelectedIds((current) => current.filter((id) => !ids.includes(id)));
-      messageApi.success(`Отмечено как прочитанное: ${result.updatedCount}.`);
+      messageApi.success(`Удалено уведомлений: ${result.deletedCount}.`);
     } catch (error) {
-      messageApi.error(error instanceof Error ? error.message : 'Не удалось обновить уведомления.');
+      messageApi.error(error instanceof Error ? error.message : 'Не удалось удалить уведомления.');
     }
+  };
+
+  const handleOpenNotificationLink = (item: NotificationItem) => {
+    if (!item.link) {
+      return;
+    }
+
+    if (!item.isRead) {
+      void handleMarkRead([item.id]);
+    }
+
+    navigate(item.link);
   };
 
   return (
@@ -57,9 +94,9 @@ export const Notifications = () => {
           <Space wrap>
             <Button
               icon={<CheckOutlined />}
-              disabled={!selectedIds.length}
+              disabled={!selectedUnreadIds.length}
               loading={markReadMutation.isLoading}
-              onClick={() => void handleMarkRead(selectedIds)}
+              onClick={() => void handleMarkRead(selectedUnreadIds)}
             >
               Отметить выбранные
             </Button>
@@ -71,6 +108,15 @@ export const Notifications = () => {
               onClick={() => void handleMarkRead(unreadIds)}
             >
               Прочитать все новые
+            </Button>
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              disabled={!selectedIds.length}
+              loading={deleteMutation.isLoading}
+              onClick={() => void handleDelete(selectedIds)}
+            >
+              Удалить выбранные
             </Button>
           </Space>
         </Flex>
@@ -92,7 +138,9 @@ export const Notifications = () => {
                     checked={selectedIds.includes(item.id)}
                     onChange={(event) => {
                       setSelectedIds((current) =>
-                        event.target.checked ? [...current, item.id] : current.filter((id) => id !== item.id),
+                        event.target.checked
+                          ? Array.from(new Set([...current, item.id]))
+                          : current.filter((id) => id !== item.id),
                       );
                     }}
                   />
@@ -105,18 +153,41 @@ export const Notifications = () => {
                       description={
                         <Flex justify="space-between" align="center" wrap="wrap" gap={12}>
                           <Text type="secondary">{formatDate(item.createdAt)}</Text>
-                          {!item.isRead ? (
+                          <Space size={12}>
+                            {item.link ? (
+                              <Button
+                                size="small"
+                                type="link"
+                                className="!px-0"
+                                onClick={() => handleOpenNotificationLink(item)}
+                              >
+                                Открыть
+                              </Button>
+                            ) : null}
+                            {!item.isRead ? (
+                              <Button
+                                size="small"
+                                type="link"
+                                className="!px-0"
+                                loading={markReadMutation.isLoading}
+                                onClick={() => void handleMarkRead([item.id])}
+                              >
+                                Отметить прочитанным
+                              </Button>
+                            ) : (
+                              <Text type="secondary">Прочитано</Text>
+                            )}
                             <Button
                               size="small"
                               type="link"
+                              danger
                               className="!px-0"
-                              onClick={() => void handleMarkRead([item.id])}
+                              loading={deleteMutation.isLoading}
+                              onClick={() => void handleDelete([item.id])}
                             >
-                              Отметить прочитанным
+                              Удалить
                             </Button>
-                          ) : (
-                            <Text type="secondary">Прочитано</Text>
-                          )}
+                          </Space>
                         </Flex>
                       }
                     />

@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 
-import { API_ENDPOINT, REFRESH_TOKEN_ENDPOINT } from '@constants';
+import { API_ENDPOINT, REFRESH_TOKEN_ENDPOINT, SIGNIN_ENDPOINT, SOCIAL_SESSION_EXCHANGE_ENDPOINT } from '@constants';
 
 export const axiosInstance = axios.create({
   baseURL: API_ENDPOINT,
@@ -8,6 +8,20 @@ export const axiosInstance = axios.create({
 });
 
 let refreshRequest: Promise<string> | null = null;
+
+const shouldSkipRefresh = (requestUrl?: string) => {
+  if (!requestUrl) {
+    return false;
+  }
+
+  return [
+    REFRESH_TOKEN_ENDPOINT,
+    '/token/refresh/',
+    SIGNIN_ENDPOINT,
+    '/signin/',
+    SOCIAL_SESSION_EXCHANGE_ENDPOINT,
+  ].some((path) => requestUrl.includes(path));
+};
 
 export const addAuthHeaderInterceptor = (config: InternalAxiosRequestConfig) => {
   const storedToken = localStorage.getItem('token');
@@ -24,19 +38,18 @@ export const addAuthHeaderInterceptor = (config: InternalAxiosRequestConfig) => 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 };
 
 export const refreshTokenOnError = async (error) => {
   const originalRequest = error.config;
-  const isRefreshRequest =
-    originalRequest?.url?.includes('/token/refresh/') || originalRequest?.url?.includes(REFRESH_TOKEN_ENDPOINT);
 
   if (!error.response || !originalRequest) {
     return Promise.reject(error);
   }
 
-  if (isRefreshRequest) {
+  if (shouldSkipRefresh(originalRequest?.url)) {
     localStorage.removeItem('token');
     return Promise.reject(error);
   }

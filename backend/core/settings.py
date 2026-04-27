@@ -38,6 +38,8 @@ S3_PRESIGNED_EXPIRATION = int(os.getenv('S3_PRESIGNED_EXPIRATION'))
 S3_PUBLIC_BASE_URL = os.getenv('S3_PUBLIC_BASE_URL', '')
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
@@ -78,6 +80,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+ASGI_APPLICATION = 'core.asgi.application'
 
 TEMPLATES = [
     {
@@ -95,6 +98,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
 
 DATABASES = {
     'default': {

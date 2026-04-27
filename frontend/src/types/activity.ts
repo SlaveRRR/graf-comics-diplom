@@ -3,6 +3,7 @@ export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 export interface NotificationItem {
   id: number;
   message: string;
+  link: string;
   type: NotificationType;
   isRead: boolean;
   createdAt: string;
@@ -20,6 +21,15 @@ export interface NotificationMarkReadPayload {
 
 export interface NotificationMarkReadResponse {
   updatedCount: number;
+  unreadCount: number;
+}
+
+export interface NotificationDeletePayload {
+  ids: number[];
+}
+
+export interface NotificationDeleteResponse {
+  deletedCount: number;
   unreadCount: number;
 }
 

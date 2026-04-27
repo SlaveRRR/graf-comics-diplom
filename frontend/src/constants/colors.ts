@@ -51,7 +51,7 @@ export const colors = {
     50: '#FEF0F9',
   },
   success: {
-    500: '#0F9918',
+    500: '#1FB63F',
   },
   warning: {
     500: '#FF8800',

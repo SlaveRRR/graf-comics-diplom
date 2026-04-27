@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from django import forms
 from django.utils.html import format_html
 
 from comics.models import (
@@ -12,6 +13,7 @@ from comics.models import (
     Genre,
     Tag,
 )
+from core.admin_utils import ModerationAdminMixin
 
 
 @admin.register(Tag)
@@ -31,8 +33,30 @@ class ChapterInline(admin.TabularInline):
     extra = 0
 
 
+class ComicAdminForm(forms.ModelForm):
+    class Meta:
+        model = Comic
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._initial_status = getattr(self.instance, 'status', None)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        next_status = cleaned_data.get('status')
+        moderation_message = (cleaned_data.get('moderation_message') or '').strip()
+
+        if self.instance.pk and next_status != self._initial_status and next_status in {'revision', 'blocked'} and not moderation_message:
+            self.add_error('moderation_message', 'Для этого статуса нужен комментарий модератора.')
+
+        return cleaned_data
+
+
 @admin.register(Comic)
-class ComicAdmin(admin.ModelAdmin):
+class ComicAdmin(ModerationAdminMixin):
+    form = ComicAdminForm
+    moderation_item_label = 'комикс'
     list_display = ('id', 'title', 'author', 'status', 'preview_link', 'published_at', 'created_at')
     list_filter = ('status', 'genre', 'tags')
     search_fields = ('title', 'description', 'author__username')
@@ -48,12 +72,23 @@ class ComicAdmin(admin.ModelAdmin):
             return 'Нет глав для preview'
 
         frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173').rstrip('/')
-        preview_url = f'{frontend_url}/comics/{obj.id}/chapters/{first_chapter.id}?preview'
+        preview_url = f'{frontend_url}/comics/{obj.id}/chapters/{first_chapter.id}?preview=true'
 
         return format_html(
             '<a href="{}" target="_blank" rel="noopener noreferrer">Открыть preview</a>',
             preview_url,
         )
+
+    def get_moderation_link_path(self, obj):
+        first_chapter = obj.chapters.order_by('chapter_number', 'id').first()
+        if obj.status == Comic.Status.PUBLISHED:
+            return f'/comics/{obj.id}'
+        if first_chapter:
+            return f'/comics/{obj.id}/chapters/{first_chapter.id}?preview=true'
+        return f'/comics/{obj.id}'
+
+    def after_publish(self, obj):
+        obj.chapters.filter(published_at__isnull=True).update(published_at=obj.published_at)
 
 
 @admin.register(Chapter)

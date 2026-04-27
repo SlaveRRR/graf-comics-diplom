@@ -100,5 +100,20 @@ describe('interceptors', () => {
       expect(mockRemoveItem).toHaveBeenCalledWith('token');
       expect(mockAxiosGet).not.toHaveBeenCalled();
     });
+
+    test('не пытается рефрешить токен при ошибке входа', async () => {
+      const error = {
+        config: { _retry: false, headers: {}, url: '/signin/' },
+        response: {
+          status: 401,
+        },
+      };
+
+      await expect(refreshTokenOnError(error)).rejects.toBe(error);
+
+      expect(mockRemoveItem).toHaveBeenCalledWith('token');
+      expect(mockAxiosGet).not.toHaveBeenCalled();
+      expect(mockRequest).not.toHaveBeenCalled();
+    });
   });
 });

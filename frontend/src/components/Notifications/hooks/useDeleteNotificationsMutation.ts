@@ -5,7 +5,7 @@ import { NotificationListResponse } from '@types';
 
 import { NOTIFICATIONS_QUERY_KEY } from './useNotificationsQuery';
 
-export const useMarkNotificationsReadMutation = () => {
+export const useDeleteNotificationsMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,7 +14,7 @@ export const useMarkNotificationsReadMutation = () => {
         throw new Error('Выберите хотя бы одно уведомление.');
       }
 
-      const response = await api.markNotificationsRead({ ids });
+      const response = await api.deleteNotifications({ ids });
       return response.data.data;
     },
     onSuccess: (_, ids) => {
@@ -24,9 +24,7 @@ export const useMarkNotificationsReadMutation = () => {
         }
 
         const idSet = new Set(ids);
-        const items = currentData.items.map((item) =>
-          idSet.has(item.id) ? { ...item, isRead: true, readAt: item.readAt ?? new Date().toISOString() } : item,
-        );
+        const items = currentData.items.filter((item) => !idSet.has(item.id));
 
         return {
           unreadCount: items.filter((item) => !item.isRead).length,

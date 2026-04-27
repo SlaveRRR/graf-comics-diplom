@@ -15,7 +15,7 @@ import {
 import { colors } from '@constants';
 import { useApp } from '@hooks';
 import { buildAuthPath, getCurrentRelativeUrl } from '@utils';
-import { useNotificationsQuery } from '@components/Notifications/hooks';
+import { useNotificationsQuery, useNotificationsSocket } from '@components/Notifications/hooks';
 
 import {
   drawerStyles,
@@ -41,6 +41,7 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
 
   const { user, isAuth } = useApp();
   const { data: notifications } = useNotificationsQuery(isAuth);
+  useNotificationsSocket(isAuth);
   const isReaderRoute = /^\/comics\/[^/]+\/chapters\/[^/]+/.test(location.pathname);
   const signInHref = buildAuthPath('/signin', {
     redirectTo: getCurrentRelativeUrl(location.pathname, location.search, location.hash),

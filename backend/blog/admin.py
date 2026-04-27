@@ -1,17 +1,10 @@
-﻿from django.conf import settings
+from django.conf import settings
 from django.contrib import admin
+from django import forms
 from django.utils.html import format_html
 
 from blog.models import BlogTag, Post, PostUploadDraft
-
-
-POST_STATUS_LABELS = {
-    Post.Status.DRAFT: 'Черновик',
-    Post.Status.UNDER_REVIEW: 'На модерации',
-    Post.Status.PUBLISHED: 'Опубликован',
-    Post.Status.BLOCKED: 'Заблокирован',
-    Post.Status.REVISION: 'На доработке',
-}
+from core.admin_utils import MODERATION_STATUS_LABELS, ModerationAdminMixin
 
 
 @admin.register(BlogTag)
@@ -20,8 +13,31 @@ class BlogTagAdmin(admin.ModelAdmin):
     search_fields = ('name', 'slug')
 
 
+class PostAdminForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._initial_status = getattr(self.instance, 'status', None)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        next_status = cleaned_data.get('status')
+        moderation_message = (cleaned_data.get('moderation_message') or '').strip()
+
+        if self.instance.pk and next_status != self._initial_status and next_status in {'revision', 'blocked'} and not moderation_message:
+            self.add_error('moderation_message', 'Для этого статуса нужен комментарий модератора.')
+
+        return cleaned_data
+
+
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(ModerationAdminMixin):
+    form = PostAdminForm
+    moderation_item_label = 'пост'
+    moderation_status_labels = MODERATION_STATUS_LABELS
     list_display = ('id', 'title', 'author', 'status_display', 'preview_link', 'published_at', 'updated_at')
     list_filter = ('status', 'tags')
     search_fields = ('title', 'author__username')
@@ -32,7 +48,7 @@ class PostAdmin(admin.ModelAdmin):
 
     @admin.display(description='Статус')
     def status_display(self, obj: Post):
-        return POST_STATUS_LABELS.get(obj.status, obj.status)
+        return MODERATION_STATUS_LABELS.get(obj.status, obj.status)
 
     @admin.display(description='Preview')
     def preview_link(self, obj: Post):
@@ -44,10 +60,10 @@ class PostAdmin(admin.ModelAdmin):
             preview_url,
         )
 
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
-        if db_field.name == 'status':
-            kwargs['choices'] = [(value, label) for value, label in POST_STATUS_LABELS.items()]
-        return super().formfield_for_choice_field(db_field, request, **kwargs)
+    def get_moderation_link_path(self, obj):
+        if obj.status == Post.Status.PUBLISHED:
+            return f'/blog/{obj.id}'
+        return f'/blog/{obj.id}/edit'
 
 
 @admin.register(PostUploadDraft)

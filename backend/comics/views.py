@@ -29,7 +29,7 @@ from comics.serializers import (
 )
 from core.api import error_response, success_response
 from interactions.models import Comment, ComicFavorite, ComicLike, Notification
-from interactions.services import create_notification
+from interactions.services import broadcast_comic_comment, create_notification
 
 AGE_RATING_DESCRIPTIONS = {
     ComicAgeRating.AGE_0: 'Подходит для самого широкого возраста без чувствительных сцен.',
@@ -493,7 +493,14 @@ class ComicCommentCreateView(ComicsAccessMixin, APIView):
                 notification_type=Notification.Type.INFO,
             )
 
-        return success_response(ComicCommentSerializer(comment).data, status.HTTP_201_CREATED)
+        serialized_comment = ComicCommentSerializer(comment).data
+        broadcast_comic_comment(
+            comic_id=comic.id,
+            comment_payload=serialized_comment,
+            comments_count=comic.comments.count(),
+        )
+
+        return success_response(serialized_comment, status.HTTP_201_CREATED)
 
 
 class ComicFavoriteToggleView(ComicsAccessMixin, APIView):

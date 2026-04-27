@@ -4,6 +4,7 @@ from rest_framework import serializers
 class NotificationSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     message = serializers.CharField()
+    link = serializers.CharField(allow_blank=True)
     type = serializers.CharField()
     isRead = serializers.BooleanField()
     createdAt = serializers.DateTimeField(source='created_at')
@@ -21,6 +22,15 @@ class NotificationMarkReadRequestSerializer(serializers.Serializer):
 
 class NotificationMarkReadResponseSerializer(serializers.Serializer):
     updatedCount = serializers.IntegerField()
+    unreadCount = serializers.IntegerField()
+
+
+class NotificationDeleteRequestSerializer(serializers.Serializer):
+    ids = serializers.ListField(child=serializers.IntegerField(min_value=1), allow_empty=False)
+
+
+class NotificationDeleteResponseSerializer(serializers.Serializer):
+    deletedCount = serializers.IntegerField()
     unreadCount = serializers.IntegerField()
 
 
@@ -50,3 +60,15 @@ class PostReadingHistoryItemSerializer(serializers.Serializer):
 class ReadingHistoryResponseSerializer(serializers.Serializer):
     comics = ComicReadingHistoryItemSerializer(many=True)
     posts = PostReadingHistoryItemSerializer(many=True)
+
+
+def build_notification_payload(notification):
+    return {
+        'id': notification.id,
+        'message': notification.message,
+        'link': notification.link,
+        'type': notification.type,
+        'isRead': bool(notification.read_at),
+        'createdAt': notification.created_at.isoformat() if notification.created_at else None,
+        'readAt': notification.read_at.isoformat() if notification.read_at else None,
+    }

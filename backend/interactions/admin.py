@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from interactions.models import Comment, ComicFavorite, ComicLike
+from interactions.models import Comment, ComicFavorite, ComicLike,Notification
 
 
 @admin.register(Comment)
@@ -20,3 +20,7 @@ class ComicFavoriteAdmin(admin.ModelAdmin):
 class ComicLikeAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'comic', 'created_at')
     search_fields = ('user__username', 'comic__title')
+
+@admin.register(Notification)
+class ComicLikeAdmin(admin.ModelAdmin):
+    pass

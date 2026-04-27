@@ -39,7 +39,13 @@ import { useApp, useRequireAuthAction } from '@hooks';
 import { ComicComment, ComicDetailChapter } from '@types';
 import { OutletContext } from '@pages/LayoutPage/types';
 
-import { useComicCommentMutation, useComicDetailsQuery, useComicFavoriteMutation, useComicLikeMutation } from './hooks';
+import {
+  useComicCommentMutation,
+  useComicCommentsSocket,
+  useComicDetailsQuery,
+  useComicFavoriteMutation,
+  useComicLikeMutation,
+} from './hooks';
 import { EpisodeSortOrder } from './types';
 
 const { Paragraph, Text, Title } = Typography;
@@ -118,6 +124,7 @@ export const ComicDetails: FC = () => {
   const likeMutation = useComicLikeMutation(comicId);
   const favoriteMutation = useComicFavoriteMutation(comicId);
   const commentMutation = useComicCommentMutation(comicId);
+  useComicCommentsSocket(comicId);
   const [commentText, setCommentText] = useState('');
   const [replyToComment, setReplyToComment] = useState<ComicComment | null>(null);
   const [episodeSortOrder, setEpisodeSortOrder] = useState<EpisodeSortOrder>('latest');
