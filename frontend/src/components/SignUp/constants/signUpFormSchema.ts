@@ -1,12 +1,15 @@
-import * as z from 'zod';
+﻿import * as z from 'zod';
 
-import { passwordSchema } from '@constants';
+import { passwordSchema, REQUIRED_FIELD_PLACEHOLDER } from '@constants';
 
 export const signUpFormSchema = z.object({
-  username: z.string(),
-  email: z.string().email().toLowerCase(),
+  username: z.string({ message: REQUIRED_FIELD_PLACEHOLDER }),
+  email: z.string({ message: REQUIRED_FIELD_PLACEHOLDER }).email().toLowerCase(),
   password: passwordSchema,
-  userAgreement: z.boolean({ message: 'Поле является обязательным!' }),
+  userAgreement: z.boolean({ message: 'Необходимо подтвердить согласие с пользовательским соглашением.' }),
+  privacyPolicy: z.boolean({
+    message: 'Необходимо подтвердить ознакомление с политикой обработки персональных данных.',
+  }),
 });
 
 export type SignUpFormSchema = z.infer<typeof signUpFormSchema>;

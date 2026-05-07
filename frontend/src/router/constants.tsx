@@ -1,4 +1,4 @@
-import {
+﻿import {
   AccountPage,
   AnalyticsPage,
   BlogPage,
@@ -13,6 +13,7 @@ import {
   HomePage,
   LayoutPage,
   NotificationsPage,
+  PrivacyPolicyPage,
   ProfilePage,
   SignInPage,
   SignUpPage,
@@ -105,6 +106,10 @@ export const ROUTES: Route[] = [
       {
         path: '/user-agreement',
         page: <UserAgreementPage />,
+      },
+      {
+        path: '/privacy-policy',
+        page: <PrivacyPolicyPage />,
       },
     ],
   },

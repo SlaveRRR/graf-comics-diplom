@@ -1,4 +1,4 @@
-export * from './AccountPage';
+﻿export * from './AccountPage';
 export * from './BlogPage';
 export * from './BlogPostPage';
 export * from './CreateBlogPostPage';
@@ -16,3 +16,4 @@ export * from './NotificationsPage';
 export * from './HistoryPage';
 export * from './UserAgreementPage';
 export * from './AnalyticsPage';
+export * from './PrivacyPolicyPage';

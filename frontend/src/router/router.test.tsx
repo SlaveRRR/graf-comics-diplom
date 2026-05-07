@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+﻿import { render, screen } from '@testing-library/react';
 
 import { Router } from './router';
 
@@ -20,6 +20,7 @@ vi.mock('@pages', () => ({
   BlogPage: () => <></>,
   BlogPostPage: () => <></>,
   UserAgreementPage: () => <></>,
+  PrivacyPolicyPage: () => <></>,
   AnalyticsPage: () => <></>,
 }));
 

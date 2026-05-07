@@ -1,7 +1,9 @@
-import { passwordSchema } from '@constants';
-import * as z from 'zod';
+﻿import * as z from 'zod';
+
+import { passwordSchema, REQUIRED_FIELD_PLACEHOLDER } from '@constants';
+
 export const signInFormSchema = z.object({
-  username: z.string(),
+  username: z.string({ message: REQUIRED_FIELD_PLACEHOLDER }),
   password: passwordSchema,
 });
 

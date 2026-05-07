@@ -14,10 +14,6 @@ export const RequiredAuth: FC<RequiredAuthProps> = ({ children }) => {
   const { isAuth } = useApp();
   const location = useLocation();
 
-  if (isAuth) {
-    return children;
-  }
-
   const redirectTo = getCurrentRelativeUrl(location.pathname, location.search, location.hash);
   const signInHref = buildAuthPath('/signin', {
     intent: 'create',
@@ -27,6 +23,10 @@ export const RequiredAuth: FC<RequiredAuthProps> = ({ children }) => {
     intent: 'create',
     redirectTo,
   });
+
+  if (isAuth) {
+    return children;
+  }
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-0 sm:py-12">

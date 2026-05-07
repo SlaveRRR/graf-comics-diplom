@@ -28,14 +28,19 @@ export const SignUp: FC = () => {
   const location = useLocation();
   const redirectTo = getRedirectFromSearch(location.search);
 
-  const submitHanlder: SubmitHandler<SignUpFormSchema> = (data) => mutate(data as SignUpParams);
+  const submitHanlder: SubmitHandler<SignUpFormSchema> = (data) =>
+    mutate({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    } as SignUpParams);
 
   const auth = async (type: SocialProvider) => {
     await trigger();
 
     const values = getValues();
 
-    if (values?.email && values?.password && values?.userAgreement && values?.username) {
+    if (values?.email && values?.password && values?.userAgreement && values?.privacyPolicy && values?.username) {
       startHeadlessSocialAuth(type, redirectTo);
     }
   };
@@ -44,7 +49,7 @@ export const SignUp: FC = () => {
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="my-container">
         <div className="mx-auto w-full max-w-[560px] rounded-[28px] bg-white p-5 shadow-sm sm:p-7 lg:p-8">
-          <Form onFinish={handleSubmit(submitHanlder)} layout="vertical">
+          <Form data-testid="form" onFinish={handleSubmit(submitHanlder)} layout="vertical">
             <Title className="text-center" level={3}>
               Регистрация
             </Title>
@@ -90,9 +95,6 @@ export const SignUp: FC = () => {
             </div>
 
             <Flex justify="center" gap={9} align="center" vertical className="pt-3">
-              <Button className="w-full sm:w-auto" loading={isLoading} size="large" type="primary" htmlType="submit">
-                Зарегистрироваться
-              </Button>
               <Controller
                 name="userAgreement"
                 control={control}
@@ -110,7 +112,30 @@ export const SignUp: FC = () => {
                   </Flex>
                 )}
               />
-              {!!errors?.userAgreement?.message && <Text type="danger">{errors?.userAgreement?.message}</Text>}
+              {!!errors?.userAgreement?.message && <Text type="danger">{errors.userAgreement.message}</Text>}
+
+              <Controller
+                name="privacyPolicy"
+                control={control}
+                render={({ field: { value, onChange, ...field } }) => (
+                  <Flex gap={12} vertical={false} align="start" className="w-full max-w-[420px]" wrap="nowrap">
+                    <Text className="flex-1 leading-6">
+                      Я ознакомлен с <Link href="/privacy-policy">политикой обработки персональных данных</Link>
+                    </Text>
+                    <Checkbox
+                      {...field}
+                      checked={value}
+                      onChange={(e) => onChange(e.target.checked)}
+                      className="mt-1 shrink-0"
+                    />
+                  </Flex>
+                )}
+              />
+              {!!errors?.privacyPolicy?.message && <Text type="danger">{errors.privacyPolicy.message}</Text>}
+
+              <Button className="w-full sm:w-auto" loading={isLoading} size="large" type="primary" htmlType="submit">
+                Зарегистрироваться
+              </Button>
               <Link href="/signin">Уже есть аккаунт?</Link>
             </Flex>
           </Form>

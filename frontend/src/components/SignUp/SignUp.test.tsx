@@ -1,34 +1,65 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+﻿import { fireEvent, render, screen } from '@testing-library/react';
 
 import { SignUp } from './SignUp';
 
+const mockMutate = vi.fn();
+
 vi.mock('@hooks', () => ({
   useForm: () => ({
-    handleSubmit: (callback) => callback(),
+    handleSubmit:
+      (
+        callback: (data: {
+          username: string;
+          email: string;
+          password: string;
+          userAgreement: boolean;
+          privacyPolicy: boolean;
+        }) => void,
+      ) =>
+      () =>
+        callback({
+          username: 'reader',
+          email: 'reader@example.com',
+          password: 'password123',
+          userAgreement: true,
+          privacyPolicy: true,
+        }),
     control: {},
     formState: {
       errors: {},
     },
-    getValues: () => {},
-    trigger: () => {},
+    getValues: () => ({
+      username: 'reader',
+      email: 'reader@example.com',
+      password: 'password123',
+      userAgreement: true,
+      privacyPolicy: true,
+    }),
+    trigger: vi.fn(),
   }),
 }));
 
 vi.mock('react-hook-form', () => ({
-  Controller: () => <></>,
+  Controller: ({
+    render,
+  }: {
+    render: (props: { field: { value: boolean; onChange: (value: boolean) => void } }) => JSX.Element;
+  }) => render({ field: { value: true, onChange: vi.fn() } }),
+}));
+
+vi.mock('react-router-dom', () => ({
+  useLocation: () => ({ pathname: '/signup', search: '', hash: '' }),
 }));
 
 vi.mock('@utils', () => ({
   startHeadlessSocialAuth: vi.fn(),
-  getRedirectFromSearch: vi.fn(),
+  getRedirectFromSearch: vi.fn(() => ''),
 }));
-
-const mockMutate = vi.fn();
 
 vi.mock('./hooks', () => ({
   useSignUpMutation: () => ({
     isLoading: false,
-    mutate: () => mockMutate(),
+    mutate: mockMutate,
   }),
 }));
 
@@ -40,6 +71,10 @@ describe('SignUp', () => {
 
     fireEvent.submit(screen.getByTestId('form'));
 
-    expect(mockMutate).toBeCalled();
+    expect(mockMutate).toBeCalledWith({
+      username: 'reader',
+      email: 'reader@example.com',
+      password: 'password123',
+    });
   });
 });

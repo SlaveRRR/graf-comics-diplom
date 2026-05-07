@@ -21,7 +21,7 @@ import YandexIcon from '@assets/icons/yandex.svg';
 import { SignInFormSchema, signInFormSchema } from './constants';
 import { useResendVerificationEmail, useSignInMutation, useSocialSessionExchange } from './hooks';
 
-const { Title, Link } = Typography;
+const { Title, Link, Text } = Typography;
 
 export const SignIn: FC = () => {
   const { handleSubmit, control } = useForm(signInFormSchema);
@@ -45,7 +45,11 @@ export const SignIn: FC = () => {
   const verificationSuccessHandled = useRef(false);
   const [verificationCooldown, setVerificationCooldown] = useState(0);
 
-  const submitHanlder: SubmitHandler<SignInFormSchema> = (data) => mutate(data as SignInParams);
+  const submitHanlder: SubmitHandler<SignInFormSchema> = (data) =>
+    mutate({
+      username: data.username,
+      password: data.password,
+    } as SignInParams);
   const verificationCooldownStorageKey = verificationEmail
     ? `verification-cooldown:${verificationEmail.toLowerCase()}`
     : null;
@@ -135,7 +139,7 @@ export const SignIn: FC = () => {
     <section className="py-4 sm:py-6 lg:py-8">
       <div className="my-container">
         <div className="mx-auto w-full max-w-[560px] rounded-[28px] bg-white p-5 shadow-sm sm:p-7 lg:p-8">
-          <Form onFinish={handleSubmit(submitHanlder)} layout="vertical">
+          <Form data-testid="form" onFinish={handleSubmit(submitHanlder)} layout="vertical">
             <Title className="text-center" level={3}>
               Авторизация
             </Title>
@@ -219,6 +223,10 @@ export const SignIn: FC = () => {
             </div>
 
             <Flex justify="center" gap={9} align="center" vertical className="pt-2">
+              <Text className="text-center text-sm text-[var(--color-text-secondary)]">
+                Продолжая вход, вы подтверждаете ознакомление с{' '}
+                <Link href="/privacy-policy">политикой обработки персональных данных</Link>.
+              </Text>
               <Button
                 className="w-full sm:w-auto"
                 loading={isLoading || isSocialExchangeLoading}
