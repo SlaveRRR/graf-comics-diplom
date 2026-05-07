@@ -1,0 +1,26 @@
+{
+  "data": {
+    "unreadCount": 1,
+    "items": [
+      {
+        "id": 501,
+        "message": "Ваш комикс опубликован и уже доступен читателям.",
+        "link": "/comics/1",
+        "type": "success",
+        "isRead": false,
+        "createdAt": "2026-04-25T12:00:00Z",
+        "readAt": null
+      },
+      {
+        "id": 502,
+        "message": "Пост отправлен на доработку. Проверьте комментарий модератора.",
+        "link": "/blog/11/edit",
+        "type": "warning",
+        "isRead": true,
+        "createdAt": "2026-04-24T12:00:00Z",
+        "readAt": "2026-04-24T13:00:00Z"
+      }
+    ]
+  },
+  "error": null
+}

@@ -1,0 +1,9 @@
+{
+  "data": {
+    "comic_id": 501,
+    "title": "Эхо башни",
+    "status": "draft",
+    "chapter_ids": [9001]
+  },
+  "error": null
+}

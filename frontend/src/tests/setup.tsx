@@ -1,10 +1,13 @@
 import { QueryClientProvider as CoreQueryClientProvider, QueryClient } from '@tanstack/react-query';
+
 import '@testing-library/jest-dom';
-import { cleanup, render } from '@testing-library/react';
+
 import { afterEach } from 'vitest';
+import { cleanup, render } from '@testing-library/react';
 
 beforeAll(() => {
   vi.mock('antd');
+  vi.mock('@ant-design/icons');
   vi.mock('react-router-dom');
   vi.mock('react-hook-form-antd');
   vi.mock('swagger-ui-react');

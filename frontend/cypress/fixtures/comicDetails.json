@@ -1,0 +1,75 @@
+{
+  "data": {
+    "id": 1,
+    "title": "Лунная башня",
+    "description": "История о молодой команде, которая исследует древний маяк между мирами.",
+    "cover": "https://placehold.co/480x640",
+    "coverUrl": "https://placehold.co/480x640",
+    "banner": "https://placehold.co/1280x720",
+    "bannerUrl": "https://placehold.co/1280x720",
+    "status": "published",
+    "ageRating": "16+",
+    "genre": { "id": 1, "name": "Фэнтези", "slug": "fantasy", "description": "Миры, магия и приключения." },
+    "tags": [
+      { "id": 11, "name": "Магия", "slug": "magic", "description": "Колдовство и артефакты." },
+      { "id": 12, "name": "Приключение", "slug": "adventure", "description": "Путешествия." }
+    ],
+    "author": { "id": 7, "username": "Aster", "avatar": null, "role": "author" },
+    "likesCount": 820,
+    "isLiked": false,
+    "favoritesCount": 304,
+    "isFavorite": false,
+    "averageRating": 4.8,
+    "ratingsCount": 124,
+    "userRating": null,
+    "commentsCount": 2,
+    "readersCount": 5100,
+    "chaptersCount": 2,
+    "chapters": [
+      {
+        "id": 101,
+        "title": "Глава 1. Свет над водой",
+        "description": "Первая глава",
+        "chapterNumber": 1,
+        "pageCount": 18,
+        "pageKeys": ["https://placehold.co/300x420?text=Page+1"],
+        "previewUrl": "https://placehold.co/300x420?text=Preview+1",
+        "likesCount": 102,
+        "commentsCount": 7,
+        "viewsCount": 1550,
+        "publishedAt": "2026-04-01T12:00:00Z"
+      },
+      {
+        "id": 102,
+        "title": "Глава 2. Тонкая грань",
+        "description": "Вторая глава",
+        "chapterNumber": 2,
+        "pageCount": 22,
+        "pageKeys": ["https://placehold.co/300x420?text=Page+2"],
+        "previewUrl": "https://placehold.co/300x420?text=Preview+2",
+        "likesCount": 88,
+        "commentsCount": 4,
+        "viewsCount": 1270,
+        "publishedAt": "2026-04-11T12:00:00Z"
+      }
+    ],
+    "comments": [
+      {
+        "id": 1,
+        "text": "Очень сильное открытие истории.",
+        "createdAt": "2026-04-11T10:00:00Z",
+        "replyToId": null,
+        "author": { "id": 99, "username": "reader_one", "avatar": null, "role": "reader" }
+      },
+      {
+        "id": 2,
+        "text": "Жду продолжение второй главы.",
+        "createdAt": "2026-04-12T10:00:00Z",
+        "replyToId": null,
+        "author": { "id": 100, "username": "reader_two", "avatar": null, "role": "reader" }
+      }
+    ],
+    "continueReading": null
+  },
+  "error": null
+}

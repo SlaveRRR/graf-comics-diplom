@@ -1,0 +1,66 @@
+{
+  "data": {
+    "id": 7,
+    "username": "aster",
+    "email": "aster@example.com",
+    "avatar": null,
+    "role": "author",
+    "name": "Aster",
+    "surname": "Moon",
+    "followersCount": 12,
+    "followingCount": 8,
+    "publicProfilePath": "/profile/7",
+    "comics": [
+      {
+        "id": 1,
+        "title": "Лунная башня",
+        "description": "Фэнтезийный комикс о дороге к древней башне.",
+        "cover": "",
+        "coverUrl": "",
+        "ageRating": "16+",
+        "status": "published",
+        "genre": "Фэнтези",
+        "tags": ["Магия", "Приключение"],
+        "likesCount": 14,
+        "commentsCount": 6,
+        "readersCount": 120,
+        "chaptersCount": 3,
+        "updatedAt": "2026-05-01T10:00:00Z",
+        "publishedAt": "2026-05-01T10:00:00Z"
+      },
+      {
+        "id": 2,
+        "title": "Техно-ветер",
+        "description": "История о городе будущего и живой сети.",
+        "cover": "",
+        "coverUrl": "",
+        "ageRating": "16+",
+        "status": "under_review",
+        "genre": "Киберпанк",
+        "tags": ["Будущее"],
+        "likesCount": 3,
+        "commentsCount": 1,
+        "readersCount": 24,
+        "chaptersCount": 1,
+        "updatedAt": "2026-05-06T10:00:00Z",
+        "publishedAt": null
+      }
+    ],
+    "posts": [
+      {
+        "id": 11,
+        "title": "Как мы рисовали пролог",
+        "excerpt": "Короткий рассказ о первых шагах в визуальном стиле главы.",
+        "cover": "",
+        "coverUrl": "",
+        "ageRating": "16+",
+        "status": "published",
+        "tags": ["Процесс", "Рисование"],
+        "commentsCount": 4,
+        "updatedAt": "2026-05-05T12:00:00Z",
+        "publishedAt": "2026-05-05T12:00:00Z"
+      }
+    ]
+  },
+  "error": null
+}

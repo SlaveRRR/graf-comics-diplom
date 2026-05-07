@@ -26,7 +26,7 @@ vi.mock('@utils', () => ({
   storePendingAuthRedirect: (...args: unknown[]) => mockStorePendingAuthRedirect(...args),
 }));
 
-vi.mock('./useApp', () => ({
+vi.mock('../useApp', () => ({
   useApp: () => mockUseApp(),
 }));
 

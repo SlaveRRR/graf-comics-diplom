@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { buildAuthPath, getCurrentRelativeUrl, storePendingAuthRedirect } from '@utils';
 
-import { AuthIntent } from '../utils/authRedirect';
-import { useApp } from './useApp';
+import { AuthIntent } from '../../utils/authRedirect';
+import { useApp } from '../useApp';
 
 export const useRequireAuthAction = () => {
   const navigate = useNavigate();

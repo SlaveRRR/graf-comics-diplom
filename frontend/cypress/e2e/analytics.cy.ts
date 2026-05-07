@@ -1,4 +1,5 @@
-﻿import { analytics, mockAnalyticsApi, mockAuthenticatedShell } from '../support/mockApi';
+import { fixtureData } from '../support/fixtureData';
+import { mockAnalyticsApi, mockAuthenticatedShell } from '../support/mockApi';
 
 describe('Analytics page', () => {
   it('renders analytics dashboard for authenticated author', () => {
@@ -11,9 +12,11 @@ describe('Analytics page', () => {
     cy.contains('Аналитика автора').should('be.visible');
     cy.passOnboarding(5);
 
-    cy.contains('h2', 'Аналитика').should('be.visible');
-    cy.contains('Скачать Excel').should('be.visible');
-    cy.contains(String(analytics.topItems[0].title)).should('be.visible');
-    cy.contains('12,450').should('be.visible');
+    fixtureData('analytics.json').then((analytics) => {
+      cy.contains('h2', 'Аналитика').should('be.visible');
+      cy.contains('Скачать Excel').should('be.visible');
+      cy.contains(String(analytics.topItems[0].title)).should('be.visible');
+      cy.contains('12,450').should('be.visible');
+    });
   });
 });

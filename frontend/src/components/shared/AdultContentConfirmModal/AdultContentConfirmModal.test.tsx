@@ -22,10 +22,6 @@ vi.mock('antd', () => ({
   },
 }));
 
-vi.mock('@ant-design/icons', () => ({
-  CloseOutlined: () => <span data-testid="close-icon" />,
-}));
-
 describe('AdultContentConfirmModal', () => {
   test('отрисовывает действия modal и вызывает обработчики', () => {
     const onConfirm = vi.fn();

@@ -112,15 +112,15 @@ export const Favorites = () => {
               placeholder="Поиск по названию, автору или описанию"
               onChange={(event) => setSearchValue(event.target.value)}
               value={searchValue}
-              className="max-w-[560px]"
+              className="w-full xl:max-w-[560px]"
             />
 
-            <Space wrap>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,220px)_minmax(0,280px)_auto] xl:items-center">
               <Select
                 isLoading={isLoadingTaxonomy}
                 allowClear
                 placeholder="Жанры"
-                className="min-w-48"
+                className="!w-full"
                 options={taxonomy?.genres}
                 onChange={(value) => setGenreId(value)}
                 value={genreId}
@@ -132,13 +132,14 @@ export const Favorites = () => {
                 allowClear
                 mode="multiple"
                 placeholder="Теги"
-                className="min-w-48"
+                className="!w-full"
                 options={taxonomy?.tags}
                 onChange={(value) => setTagIds(Array.isArray(value) ? value : [])}
                 value={tagIds}
                 showSearch
               />
               <Segmented<SortKey>
+                block
                 value={sort}
                 onChange={(value) => setSort(value)}
                 options={[
@@ -147,7 +148,7 @@ export const Favorites = () => {
                   { label: 'По читателям', value: 'readers' },
                 ]}
               />
-            </Space>
+            </div>
           </Space>
         </Flex>
       </section>

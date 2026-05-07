@@ -234,13 +234,18 @@ export const Account: FC = () => {
                     showUploadList={false}
                     disabled={!isEditing || avatarUploadMutation.isLoading}
                   >
-                    <Button icon={<CameraOutlined />} loading={avatarUploadMutation.isLoading} disabled={!isEditing}>
+                    <Button
+                      className="w-full sm:w-auto"
+                      icon={<CameraOutlined />}
+                      loading={avatarUploadMutation.isLoading}
+                      disabled={!isEditing}
+                    >
                       Загрузить аватар
                     </Button>
                   </Upload>
                 </Flex>
 
-                <Flex vertical gap={14} className="min-w-[220px] flex-1">
+                <Flex vertical gap={14} className="min-w-0 flex-1 sm:min-w-[220px]">
                   <Flex vertical gap={8}>
                     <Space wrap>
                       <Tag
@@ -264,7 +269,11 @@ export const Account: FC = () => {
                     </div>
                   </Flex>
 
-                  <Flex gap={12} wrap="wrap">
+                  <Flex
+                    gap={12}
+                    wrap="wrap"
+                    className="[&_.ant-btn]:w-full sm:[&_.ant-btn]:w-auto [&_a]:w-full sm:[&_a]:w-auto"
+                  >
                     <AccountMetric label="Подписчики" value={formatCount(data.followersCount)} />
                     <AccountMetric label="Подписки" value={formatCount(data.followingCount)} />
                     {isCreator ? <AccountMetric label="Комиксы" value={formatCount(authorComics.length)} /> : null}
@@ -281,7 +290,11 @@ export const Account: FC = () => {
                     Быстрые действия
                   </Text>
 
-                  <Flex gap={12} wrap="wrap">
+                  <Flex
+                    gap={12}
+                    wrap="wrap"
+                    className="[&_.ant-btn]:w-full sm:[&_.ant-btn]:w-auto [&_a]:w-full sm:[&_a]:w-auto"
+                  >
                     <Button
                       type={isEditing ? 'default' : 'primary'}
                       icon={<EditOutlined />}
@@ -441,7 +454,7 @@ export const Account: FC = () => {
 };
 
 const AccountMetric: FC<{ label: string; value: string }> = ({ label, value }) => (
-  <Card className="min-w-[132px] border-0 bg-white/80 shadow-none">
+  <Card className="min-w-0 border-0 bg-white/80 shadow-none sm:min-w-[132px]">
     <Statistic title={label} value={value} />
   </Card>
 );

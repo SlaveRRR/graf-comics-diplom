@@ -1,0 +1,30 @@
+{
+  "data": {
+    "comic_draft_id": "draft-501",
+    "expires_at": "2026-05-07T12:00:00Z",
+    "cover": {
+      "method": "PUT",
+      "key": "comics/covers/echo-tower-cover.png",
+      "upload_url": "https://upload.example.com/comics/cover"
+    },
+    "banner": {
+      "method": "PUT",
+      "key": "comics/banners/echo-tower-banner.png",
+      "upload_url": "https://upload.example.com/comics/banner"
+    },
+    "chapters": [
+      {
+        "draft_id": "chapter-draft-1",
+        "chapter_number": 1,
+        "pages": [
+          {
+            "method": "PUT",
+            "key": "comics/chapters/1/page-1.png",
+            "upload_url": "https://upload.example.com/comics/page-1"
+          }
+        ]
+      }
+    ]
+  },
+  "error": null
+}

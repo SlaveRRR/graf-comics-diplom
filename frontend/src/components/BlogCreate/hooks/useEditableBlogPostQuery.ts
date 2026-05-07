@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 
 import { api } from '@api';
 
 export const EDITABLE_BLOG_POST_QUERY_KEY = 'editable-blog-post';
 
-export const useEditableBlogPostQuery = (postId?: string) =>
-  useQuery({
+export const useEditableBlogPostQuery = (postId?: string) => {
+  const query = useQuery({
     queryKey: [EDITABLE_BLOG_POST_QUERY_KEY, postId],
     enabled: Boolean(postId),
     queryFn: async () => {
@@ -13,3 +13,9 @@ export const useEditableBlogPostQuery = (postId?: string) =>
       return response.data.data;
     },
   });
+
+  return {
+    ...query,
+    isLoading: Boolean(postId) && query.isLoading,
+  };
+};

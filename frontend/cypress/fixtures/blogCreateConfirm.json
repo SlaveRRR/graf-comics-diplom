@@ -1,0 +1,10 @@
+{
+  "data": {
+    "id": 101,
+    "title": "Новый пост о процессе",
+    "coverUrl": "",
+    "ageRating": "16+",
+    "status": "draft"
+  },
+  "error": null
+}

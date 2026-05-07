@@ -1,0 +1,7 @@
+{
+  "data": [
+    { "id": 201, "name": "Редакция", "slug": "editorial", "description": "Материалы редакции." },
+    { "id": 202, "name": "Процесс", "slug": "process", "description": "Заметки о создании." }
+  ],
+  "error": null
+}

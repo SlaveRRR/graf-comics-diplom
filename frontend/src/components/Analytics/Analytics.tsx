@@ -1,4 +1,4 @@
-import {
+﻿import {
   Button,
   Card,
   Col,
@@ -182,8 +182,8 @@ export const Analytics = () => {
   const hasPieData = pieData.some((item) => item.value > 0);
   const hasContentSummaryData = Boolean(
     data &&
-      (Object.values(data.totalsByContentType.comic).some((value) => value > 0) ||
-        Object.values(data.totalsByContentType.post).some((value) => value > 0)),
+    (Object.values(data.totalsByContentType.comic).some((value) => value > 0) ||
+      Object.values(data.totalsByContentType.post).some((value) => value > 0)),
   );
 
   const topContentColumns = [
@@ -255,7 +255,7 @@ export const Analytics = () => {
     },
     {
       title: 'Графики',
-      description: 'Ниже вы видите, как меняется внимание к контенту во времени и как оно распределяется по типам.',
+      description: 'Ниже видно, как меняется внимание к контенту во времени и как оно распределяется по типам.',
       target: () => chartsRef.current,
     },
     {
@@ -332,8 +332,9 @@ export const Analytics = () => {
       <div ref={filtersRef}>
         <Card className="border-0 shadow-sm">
           <Flex vertical gap={16}>
-            <Space wrap size={12}>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[auto_minmax(0,320px)_auto_auto] xl:items-center">
               <Segmented<AnalyticsContentType>
+                block
                 value={contentType}
                 onChange={(value) => {
                   setContentType(value);
@@ -351,7 +352,7 @@ export const Analytics = () => {
                 disabled={contentType === 'all'}
                 placeholder={contentType === 'all' ? 'Сначала выберите тип контента' : 'Выбрать материал'}
                 value={selectedItemId}
-                className="min-w-[300px]"
+                className="!w-full md:!w-[320px]"
                 options={availableItems.map((item: AnalyticsFilterItem) => ({
                   label: `${item.title} • ${statusLabels[item.status] ?? item.status}`,
                   value: item.id,
@@ -360,6 +361,7 @@ export const Analytics = () => {
               />
 
               <RangePicker
+                className="!w-full md:!w-auto"
                 value={range}
                 onChange={(value) => {
                   if (value?.[0] && value[1]) {
@@ -370,6 +372,7 @@ export const Analytics = () => {
               />
 
               <Segmented<AnalyticsInterval>
+                block
                 value={interval}
                 onChange={(value) => setInterval(value)}
                 options={[
@@ -378,9 +381,9 @@ export const Analytics = () => {
                   { label: 'Месяц', value: 'month' },
                 ]}
               />
-            </Space>
+            </div>
 
-            <Space wrap size={8}>
+            <Flex gap={8} wrap="wrap">
               {Object.entries(PRESET_LABELS).map(([preset, label]) => (
                 <Button
                   key={preset}
@@ -390,7 +393,7 @@ export const Analytics = () => {
                   {label}
                 </Button>
               ))}
-            </Space>
+            </Flex>
           </Flex>
         </Card>
       </div>

@@ -1,0 +1,10 @@
+{
+  "data": {
+    "id": 7,
+    "username": "aster",
+    "email": "aster@example.com",
+    "avatar": null,
+    "role": "author"
+  },
+  "error": null
+}

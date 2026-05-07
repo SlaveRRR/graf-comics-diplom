@@ -247,7 +247,7 @@ const BlogCommentItem: FC<BlogCommentItemProps> = ({ comment, onReply }) => (
       </Flex>
 
       {comment.replies.length ? (
-        <div className="ml-14 border-l border-black/8 pl-4">
+        <div className="ml-6 border-l border-black/8 pl-4 sm:ml-14">
           <Flex vertical gap={12}>
             {comment.replies.map((reply) => (
               <BlogCommentItem key={reply.id} comment={reply} onReply={onReply} />

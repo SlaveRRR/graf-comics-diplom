@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Col, Empty, Flex, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
+﻿import { Avatar, Button, Card, Col, Empty, Flex, Row, Skeleton, Space, Statistic, Tag, Typography } from 'antd';
 import { FC, ReactNode, useMemo } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
 import {
@@ -112,7 +112,7 @@ export const Profile: FC = () => {
                   {data.username[0]?.toUpperCase()}
                 </Avatar>
 
-                <Flex vertical gap={14} className="min-w-[220px] flex-1">
+                <Flex vertical gap={14} className="min-w-0 flex-1 sm:min-w-[220px]">
                   <Flex vertical gap={8}>
                     <Space wrap>
                       <Tag
@@ -166,13 +166,14 @@ export const Profile: FC = () => {
                   </Text>
 
                   {data.isCurrentUser ? (
-                    <Link to="/account">
-                      <Button type="primary" icon={<LinkOutlined />}>
+                    <Link to="/account" className="w-full sm:w-auto">
+                      <Button className="w-full sm:w-auto" type="primary" icon={<LinkOutlined />}>
                         Перейти в личный кабинет
                       </Button>
                     </Link>
                   ) : (
                     <Button
+                      className="w-full sm:w-auto"
                       type={data.isFollowing ? 'default' : 'primary'}
                       icon={data.isFollowing ? <UserDeleteOutlined /> : <UserAddOutlined />}
                       loading={followMutation.isLoading}
@@ -226,7 +227,7 @@ export const Profile: FC = () => {
 };
 
 const ProfileMetric: FC<{ label: string; value: string }> = ({ label, value }) => (
-  <Card className="min-w-[132px] border-0 bg-white/80 shadow-none">
+  <Card className="min-w-0 border-0 bg-white/80 shadow-none sm:min-w-[132px]">
     <Statistic title={label} value={value} />
   </Card>
 );

@@ -1,4 +1,4 @@
-import { Alert, Button, Divider, Flex, Form, Image, Input, Space, Typography } from 'antd';
+﻿import { Alert, Button, Divider, Flex, Form, Image, Input, Typography } from 'antd';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { FormItem } from 'react-hook-form-antd';
@@ -132,98 +132,106 @@ export const SignIn: FC = () => {
   };
 
   return (
-    <section>
+    <section className="py-4 sm:py-6 lg:py-8">
       <div className="my-container">
-        <Form onFinish={handleSubmit(submitHanlder)}>
-          <Title className="text-center" level={3}>
-            Авторизация
-          </Title>
+        <div className="mx-auto w-full max-w-[560px] rounded-[28px] bg-white p-5 shadow-sm sm:p-7 lg:p-8">
+          <Form onFinish={handleSubmit(submitHanlder)} layout="vertical">
+            <Title className="text-center" level={3}>
+              Авторизация
+            </Title>
 
-          {intentLabel ? (
-            <Alert
-              className="mb-4"
-              type="warning"
-              showIcon
-              message="Нужен аккаунт"
-              description={`Войдите или зарегистрируйтесь, чтобы ${intentLabel}. После входа вы автоматически вернётесь к нужному экрану.`}
-            />
-          ) : null}
+            {intentLabel ? (
+              <Alert
+                className="mb-4"
+                type="warning"
+                showIcon
+                message="Нужен аккаунт"
+                description={`Войдите или зарегистрируйтесь, чтобы ${intentLabel}. После входа вы автоматически вернётесь к нужному экрану.`}
+              />
+            ) : null}
 
-          {verificationState === 'pending' && verificationEmail ? (
-            <Alert
-              className="mb-4"
-              type="info"
-              message="Подтвердите электронную почту"
-              description={
-                <Flex vertical gap={12}>
-                  <span>
-                    Мы отправили письмо на <strong>{verificationEmail}</strong>. После подтверждения почты можно будет
-                    войти в аккаунт.
-                  </span>
-                  <Flex gap={12} align="center" wrap="wrap">
-                    <Button
-                      type="default"
-                      onClick={handleResendVerificationEmail}
-                      disabled={verificationCooldown > 0}
-                      loading={isResendingVerificationEmail}
-                    >
-                      Отправить письмо повторно
-                    </Button>
-                    <span className="text-sm text-[var(--color-text-secondary)]">
-                      {verificationCooldown > 0
-                        ? `Повторная отправка будет доступна через ${verificationCooldown} сек.`
-                        : 'Можно запросить новое письмо.'}
+            {verificationState === 'pending' && verificationEmail ? (
+              <Alert
+                className="mb-4"
+                type="info"
+                message="Подтвердите электронную почту"
+                description={
+                  <Flex vertical gap={12}>
+                    <span>
+                      Мы отправили письмо на <strong>{verificationEmail}</strong>. После подтверждения почты можно будет
+                      войти в аккаунт.
                     </span>
+                    <Flex gap={12} align="center" wrap="wrap">
+                      <Button
+                        type="default"
+                        onClick={handleResendVerificationEmail}
+                        disabled={verificationCooldown > 0}
+                        loading={isResendingVerificationEmail}
+                      >
+                        Отправить письмо повторно
+                      </Button>
+                      <span className="text-sm text-[var(--color-text-secondary)]">
+                        {verificationCooldown > 0
+                          ? `Повторная отправка будет доступна через ${verificationCooldown} сек.`
+                          : 'Можно запросить новое письмо.'}
+                      </span>
+                    </Flex>
                   </Flex>
-                </Flex>
-              }
-            />
-          ) : null}
+                }
+              />
+            ) : null}
 
-          <FormItem control={control} name="username" label="Имя пользователя">
-            <Input placeholder="Заполните это поле" />
-          </FormItem>
+            <FormItem control={control} name="username" label="Имя пользователя">
+              <Input size="large" placeholder="Заполните это поле" />
+            </FormItem>
 
-          <FormItem control={control} name="password" label="Пароль">
-            <Input.Password placeholder="Заполните это поле" />
-          </FormItem>
+            <FormItem control={control} name="password" label="Пароль">
+              <Input.Password size="large" placeholder="Заполните это поле" />
+            </FormItem>
 
-          <Divider plain>или войти через</Divider>
+            <Divider plain>или войти через</Divider>
 
-          <Space size={12} className="mb-3 flex w-full justify-center">
-            <Button
-              className="flex items-center px-7 py-5 [&_img]:inline"
-              size="large"
-              icon={<Image src={GoogleIcon} preview={false} />}
-              block
-              disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('google', redirectTo)}
-            />
-            <Button
-              className="flex items-center px-7 py-5 [&_img]:inline"
-              size="large"
-              icon={<Image src={YandexIcon} preview={false} />}
-              block
-              disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('yandex', redirectTo)}
-            />
-            <Button
-              className="flex items-center px-7 py-5 [&_img]:inline"
-              size="large"
-              icon={<Image src={VkIcon} preview={false} />}
-              block
-              disabled={isSocialExchangeLoading}
-              onClick={() => startHeadlessSocialAuth('vk', redirectTo)}
-            />
-          </Space>
+            <div className="mb-3 grid grid-cols-3 gap-3">
+              <Button
+                className="!flex !h-12 !items-center !justify-center [&_img]:inline"
+                size="large"
+                icon={<Image src={GoogleIcon} preview={false} />}
+                block
+                disabled={isSocialExchangeLoading}
+                onClick={() => startHeadlessSocialAuth('google', redirectTo)}
+              />
+              <Button
+                className="!flex !h-12 !items-center !justify-center [&_img]:inline"
+                size="large"
+                icon={<Image src={YandexIcon} preview={false} />}
+                block
+                disabled={isSocialExchangeLoading}
+                onClick={() => startHeadlessSocialAuth('yandex', redirectTo)}
+              />
+              <Button
+                className="!flex !h-12 !items-center !justify-center [&_img]:inline"
+                size="large"
+                icon={<Image src={VkIcon} preview={false} />}
+                block
+                disabled={isSocialExchangeLoading}
+                onClick={() => startHeadlessSocialAuth('vk', redirectTo)}
+              />
+            </div>
 
-          <Flex justify="center" gap={9} align="center" vertical className="pt-2">
-            <Button loading={isLoading || isSocialExchangeLoading} type="primary" htmlType="submit">
-              Войти
-            </Button>
-            <Link href={buildAuthPath('/signup', { intent, redirectTo })}>Ещё нет аккаунта?</Link>
-          </Flex>
-        </Form>
+            <Flex justify="center" gap={9} align="center" vertical className="pt-2">
+              <Button
+                className="w-full sm:w-auto"
+                loading={isLoading || isSocialExchangeLoading}
+                size="large"
+                type="primary"
+                htmlType="submit"
+              >
+                Войти
+              </Button>
+              <Link href={buildAuthPath('/signup', { intent, redirectTo })}>Ещё нет аккаунта?</Link>
+            </Flex>
+          </Form>
+        </div>
       </div>
     </section>
   );

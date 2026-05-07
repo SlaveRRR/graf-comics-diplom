@@ -1,0 +1,117 @@
+{
+  "data": {
+    "filters": {
+      "contentType": "all",
+      "itemId": null,
+      "dateFrom": "2026-04-01",
+      "dateTo": "2026-04-30",
+      "interval": "day"
+    },
+    "summary": {
+      "views": { "value": 12450, "delta": 340 },
+      "reach": { "value": 8200, "delta": 210 },
+      "comments": { "value": 98, "delta": 12 },
+      "likes": { "value": 560, "delta": 45 },
+      "favorites": { "value": 173, "delta": 19 },
+      "publications": { "value": 3, "delta": 1 },
+      "engagement": { "value": 831, "delta": 64 },
+      "engagementRate": { "value": 10.13, "delta": 0.52 }
+    },
+    "totalsByContentType": {
+      "comic": {
+        "views": 9800,
+        "reach": 6400,
+        "comments": 73,
+        "likes": 510,
+        "favorites": 173,
+        "publications": 2,
+        "engagement": 756,
+        "engagementRate": 11.81
+      },
+      "post": {
+        "views": 2650,
+        "reach": 1800,
+        "comments": 25,
+        "likes": 50,
+        "favorites": 0,
+        "publications": 1,
+        "engagement": 75,
+        "engagementRate": 4.17
+      }
+    },
+    "timeline": [
+      {
+        "period": "2026-04-01",
+        "views": 1200,
+        "reach": 800,
+        "comments": 10,
+        "likes": 40,
+        "favorites": 11,
+        "publications": 1,
+        "engagement": 61
+      },
+      {
+        "period": "2026-04-08",
+        "views": 2400,
+        "reach": 1610,
+        "comments": 18,
+        "likes": 100,
+        "favorites": 28,
+        "publications": 0,
+        "engagement": 146
+      },
+      {
+        "period": "2026-04-15",
+        "views": 3100,
+        "reach": 2050,
+        "comments": 24,
+        "likes": 170,
+        "favorites": 51,
+        "publications": 1,
+        "engagement": 245
+      },
+      {
+        "period": "2026-04-22",
+        "views": 5750,
+        "reach": 3740,
+        "comments": 46,
+        "likes": 250,
+        "favorites": 83,
+        "publications": 1,
+        "engagement": 379
+      }
+    ],
+    "topItems": [
+      {
+        "contentType": "comic",
+        "objectId": 1,
+        "title": "Лунная башня",
+        "views": 6400,
+        "reach": 4100,
+        "comments": 55,
+        "likes": 320,
+        "favorites": 101,
+        "publications": 1,
+        "engagement": 476
+      },
+      {
+        "contentType": "post",
+        "objectId": 11,
+        "title": "Как мы рисовали пролог",
+        "views": 2650,
+        "reach": 1800,
+        "comments": 25,
+        "likes": 50,
+        "favorites": 0,
+        "publications": 1,
+        "engagement": 75
+      }
+    ],
+    "availableItems": [
+      { "id": 1, "title": "Лунная башня", "contentType": "comic", "status": "published" },
+      { "id": 2, "title": "Техно-ветер", "contentType": "comic", "status": "under_review" },
+      { "id": 11, "title": "Как мы рисовали пролог", "contentType": "post", "status": "published" }
+    ]
+  },
+  "error": null
+}

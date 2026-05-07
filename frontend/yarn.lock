@@ -3208,6 +3208,13 @@
     "@types/deep-eql" "*"
     assertion-error "^2.0.1"
 
+"@types/cypress@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/cypress/-/cypress-1.1.6.tgz#b190688acffb847a3f5c4cee15c82d4f2a342ee6"
+  integrity sha512-CfeLLD3+6vIWe2AO5hR63f1c8EbRzrp/j1ExubAwOTpwZFZvF3Nm9cOPQiUwzNmAUmZuhO0QVH98Qlujni6nPw==
+  dependencies:
+    cypress "*"
+
 "@types/d3-array@^3.2.1":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-3.2.2.tgz#e02151464d02d4a1b44646d0fcdb93faf88fde8c"
@@ -4343,7 +4350,7 @@ csstype@3.2.3, csstype@^3.0.8, csstype@^3.1.3, csstype@^3.2.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
-cypress@^15.14.2:
+cypress@*, cypress@^15.14.2:
   version "15.14.2"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.14.2.tgz#3890ec5a2340480ec055732cd28cf9983ea846e9"
   integrity sha512-xMWg/iEImeIThRQZdnf3BFJT1a84apM/R91Feoa4vVWGuYWDphMT5jLhRVTBVlCgi+6axegF1zqhNyjhug2SsQ==

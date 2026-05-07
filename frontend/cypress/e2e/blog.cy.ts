@@ -1,4 +1,5 @@
-﻿import { blogPosts, mockPublicApi } from '../support/mockApi';
+import { fixtureData } from '../support/fixtureData';
+import { mockPublicApi } from '../support/mockApi';
 
 describe('Blog page', () => {
   it('renders blog feed from mocked responses', () => {
@@ -7,8 +8,10 @@ describe('Blog page', () => {
     cy.visitApp('/blog');
     cy.wait(['@getBlogPosts', '@getBlogTags']);
 
-    cy.contains('Блог платформы').should('be.visible');
-    cy.contains(blogPosts[0].title).should('be.visible');
-    cy.contains(blogPosts[1].title).should('be.visible');
+    fixtureData('blogPosts.json').then((blogPosts) => {
+      cy.contains('Блог платформы').should('be.visible');
+      cy.contains(blogPosts[0].title).should('be.visible');
+      cy.contains(blogPosts[1].title).should('be.visible');
+    });
   });
 });
